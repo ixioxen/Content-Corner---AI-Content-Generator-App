@@ -65,6 +65,14 @@ class User extends Authenticatable implements PasskeyUser
         return $this->hasMany(CreditTransaction::class);
     }
 
+    /**
+     * @return HasMany<CustomTone, $this>
+     */
+    public function customTones(): HasMany
+    {
+        return $this->hasMany(CustomTone::class);
+    }
+
     public function isAdmin(): bool
     {
         return $this->role === UserRole::Admin;
