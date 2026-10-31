@@ -1,0 +1,55 @@
+
+> build
+> vp build
+
+[plugin @laravel/vite-plugin-wayfinder] Types generated for actions, routes, form variants
+transforming...
+✓ 3446 modules transformed.
+rendering chunks...
+computing gzip size...
+public/build/manifest.json                           11.50 kB │ gzip:  1.48 kB
+public/build/assets/app-Ds1aFT64.css                 14.91 kB │ gzip:  3.04 kB
+public/build/assets/app-BCNwpE0X.css                109.09 kB │ gzip: 17.97 kB
+public/build/assets/check-dK4NEtCr.js                 0.14 kB │ gzip:  0.15 kB
+public/build/assets/InputError-RD2TSziO.js            0.29 kB │ gzip:  0.24 kB
+public/build/assets/trash-C935YSs9.js                 0.36 kB │ gzip:  0.24 kB
+public/build/assets/confirm-Culw9Q-x.js               0.36 kB │ gzip:  0.22 kB
+public/build/assets/Spinner-B5XgEVxY.js               0.39 kB │ gzip:  0.29 kB
+public/build/assets/TextLink-BXP3s5hj.js              0.51 kB │ gzip:  0.34 kB
+public/build/assets/wayfinder-Dp7PqxvV.js             0.89 kB │ gzip:  0.53 kB
+public/build/assets/Label-N373KB31.js                 1.06 kB │ gzip:  0.57 kB
+public/build/assets/Input-CfNnW5Op.js                 1.19 kB │ gzip:  0.66 kB
+public/build/assets/VerifyEmail-BGF5xVV9.js           1.23 kB │ gzip:  0.70 kB
+public/build/assets/PasskeyVerify-C43mCA34.js         1.42 kB │ gzip:  0.81 kB
+public/build/assets/verification-BOcn3HIw.js          1.48 kB │ gzip:  0.52 kB
+public/build/assets/ForgotPassword-BNFhd8h9.js        1.69 kB │ gzip:  0.90 kB
+public/build/assets/PasswordInput-CO-VHfaq.js         1.69 kB │ gzip:  0.93 kB
+public/build/assets/Appearance-Uwb20Xvr.js            2.21 kB │ gzip:  1.12 kB
+public/build/assets/ResetPassword-BK07EmXl.js         2.23 kB │ gzip:  0.93 kB
+public/build/assets/ConfirmPassword-hJKmfuOM.js       2.26 kB │ gzip:  1.07 kB
+public/build/assets/createLucideIcon-B9N1s0gf.js      2.53 kB │ gzip:  1.27 kB
+public/build/assets/password-CB_NxgQN.js              2.73 kB │ gzip:  0.73 kB
+public/build/assets/Register-DYdc59dq.js              2.94 kB │ gzip:  1.19 kB
+public/build/assets/Dashboard-YBJ9m8Og.js             2.97 kB │ gzip:  1.33 kB
+public/build/assets/TwoFactorChallenge-BbUhdZ4n.js    3.01 kB │ gzip:  1.22 kB
+public/build/assets/Index-BTm16qAz.js                 3.17 kB │ gzip:  1.45 kB
+public/build/assets/Form-DN2Ioa2u.js                  3.92 kB │ gzip:  1.60 kB
+public/build/assets/useForwardExpose-TaH-aQhX.js      4.49 kB │ gzip:  2.05 kB
+public/build/assets/dialog-Cw-rADr9.js                5.18 kB │ gzip:  1.76 kB
+public/build/assets/Profile-BxkMW6GF.js               6.09 kB │ gzip:  2.21 kB
+public/build/assets/Presence-DGO5MfMJ.js              8.94 kB │ gzip:  3.90 kB
+public/build/assets/login-142UbeqZ.js                12.79 kB │ gzip:  4.93 kB
+public/build/assets/vue-dfMHnqcv.js                  13.37 kB │ gzip:  4.45 kB
+public/build/assets/Login-CHGmmbde.js                15.68 kB │ gzip:  5.91 kB
+public/build/assets/Welcome-BpTUrptS.js              28.50 kB │ gzip:  6.08 kB
+public/build/assets/Security-DC8ijCz_.js             28.69 kB │ gzip:  8.56 kB
+public/build/assets/button-DOyQOg56.js               30.92 kB │ gzip: 10.12 kB
+public/build/assets/app-CBh_ahFv.js                 167.52 kB │ gzip: 47.51 kB
+public/build/assets/dist-B9JO31CZ.js                233.45 kB │ gzip: 79.77 kB
+
+[32m✓ built in 4.28s[39m
+[33m[33m[PLUGIN_TIMINGS] [0mYour build spent 90% of 4.3s inside plugin hooks (3.8s).
+Measured inside the callback, so queue time is excluded and time the callback itself awaited is not:
+  - @tailwindcss/vite:generate:build transform (33%, 1.4s, 2 calls)
+See https://rolldown.rs/reference/InputOptions.checks#plugintimings for more details.
+[39m

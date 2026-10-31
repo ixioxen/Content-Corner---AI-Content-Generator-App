@@ -16,7 +16,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-#[Fillable(['name', 'description', 'sample_content'])]
+#[Fillable(['name', 'description', 'sample_content'])] 
 class CustomTone extends Model
 {
     /**
