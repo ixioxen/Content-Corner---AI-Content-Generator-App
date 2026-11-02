@@ -1,10 +1,16 @@
 <script setup lang="ts">
-import { Link } from '@inertiajs/vue3';
-import { BookOpen, FolderGit2, LayoutGrid, MessagesSquare, ScrollText, ShieldCheck, Users } from '@lucide/vue';
+import { Link, usePage } from '@inertiajs/vue3';
+import {
+    Building2,
+    History,
+    LayoutGrid,
+    MessagesSquare,
+    ScrollText,
+    ShieldCheck,
+    Users,
+} from '@lucide/vue';
 import { computed } from 'vue';
-import { usePage } from '@inertiajs/vue3';
 import AppLogo from '@/components/AppLogo.vue';
-import NavFooter from '@/components/NavFooter.vue';
 import NavMain from '@/components/NavMain.vue';
 import NavUser from '@/components/NavUser.vue';
 import {
@@ -32,36 +38,35 @@ const mainNavItems = computed<NavItem[]>(() => [
         href: '/tones',
         icon: MessagesSquare,
     },
-    ...(page.props.auth.user.role === 'admin'
-        ? [
-              { title: 'Admin overview', href: '/admin', icon: ShieldCheck },
-              { title: 'Manage users', href: '/admin/users', icon: Users },
-              { title: 'Transactions', href: '/admin/transactions', icon: LayoutGrid },
-              { title: 'Audit logs', href: '/admin/audit-logs', icon: ScrollText },
-          ]
-        : []),
+    {
+        title: 'Brand profiles',
+        href: '/brands',
+        icon: Building2,
+    },
 ]);
 
-const footerNavItems: NavItem[] = [
-    {
-        title: 'Repository',
-        href: 'https://github.com/laravel/vue-starter-kit',
-        icon: FolderGit2,
-    },
-    {
-        title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits#vue',
-        icon: BookOpen,
-    },
+const adminNavItems: NavItem[] = [
+    { title: 'Overview', href: '/admin', icon: ShieldCheck },
+    { title: 'Users', href: '/admin/users', icon: Users },
+    { title: 'Transactions', href: '/admin/transactions', icon: History },
+    { title: 'Audit logs', href: '/admin/audit-logs', icon: ScrollText },
 ];
 </script>
 
 <template>
-    <Sidebar collapsible="icon" variant="inset">
-        <SidebarHeader>
+    <Sidebar
+        collapsible="icon"
+        variant="inset"
+        class="border-sidebar-border/70 border-r"
+    >
+        <SidebarHeader class="border-sidebar-border/70 border-b px-3 py-4">
             <SidebarMenu>
                 <SidebarMenuItem>
-                    <SidebarMenuButton size="lg" as-child>
+                    <SidebarMenuButton
+                        size="lg"
+                        as-child
+                        class="hover:bg-sidebar-accent/70 h-auto rounded-xl px-2 py-2"
+                    >
                         <Link :href="dashboard()">
                             <AppLogo />
                         </Link>
@@ -70,12 +75,16 @@ const footerNavItems: NavItem[] = [
             </SidebarMenu>
         </SidebarHeader>
 
-        <SidebarContent>
-            <NavMain :items="mainNavItems" />
+        <SidebarContent class="gap-1 px-2 py-4">
+            <NavMain label="Workspace" :items="mainNavItems" />
+            <NavMain
+                v-if="page.props.auth.user.role === 'admin'"
+                label="Administration"
+                :items="adminNavItems"
+            />
         </SidebarContent>
 
-        <SidebarFooter>
-            <NavFooter :items="footerNavItems" />
+        <SidebarFooter class="border-sidebar-border/70 border-t px-3 py-3">
             <NavUser />
         </SidebarFooter>
     </Sidebar>

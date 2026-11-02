@@ -73,6 +73,14 @@ class User extends Authenticatable implements PasskeyUser
         return $this->hasMany(CustomTone::class);
     }
 
+    /**
+     * @return HasMany<BrandProfile, $this>
+     */
+    public function brandProfiles(): HasMany
+    {
+        return $this->hasMany(BrandProfile::class);
+    }
+
     public function isAdmin(): bool
     {
         return $this->role === UserRole::Admin;

@@ -12,17 +12,19 @@ import type { NavItem } from '@/types';
 
 defineProps<{
     items: NavItem[];
+    label: string;
 }>();
 
 const { isCurrentUrl } = useCurrentUrl();
 </script>
 
 <template>
-    <SidebarGroup class="px-2 py-0">
-        <SidebarGroupLabel>Platform</SidebarGroupLabel>
+    <SidebarGroup class="px-2 py-1">
+        <SidebarGroupLabel class="mb-1 px-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground/80">{{ label }}</SidebarGroupLabel>
         <SidebarMenu>
             <SidebarMenuItem v-for="item in items" :key="item.title">
                 <SidebarMenuButton
+                    class="h-10 rounded-lg transition-colors hover:bg-sidebar-accent/70 data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium"
                     as-child
                     :is-active="isCurrentUrl(item.href)"
                     :tooltip="item.title"

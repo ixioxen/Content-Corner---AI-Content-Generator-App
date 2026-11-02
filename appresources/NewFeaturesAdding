@@ -1,0 +1,122 @@
+# AI SaaS Content Generator — HLD Addendum
+
+## Scope
+
+Add only these 3 features to the existing project:
+
+1. Brand Profile
+2. Content Repurposing
+3. Content Editor & AI Assistant
+
+Keep the existing architecture, authentication, credit system, billing, and admin modules unchanged.
+
+## 1. Brand Profile
+
+**Purpose:** Save brand identity and reuse it during content generation.
+
+**Fields:**
+- Brand Name
+- Industry
+- Target Audience
+- Brand Personality
+- Writing Style
+- Preferred Words
+- Emoji Usage
+- Preferred Language
+- Main Platform
+- Audience Pain Points
+- Avoid Words
+- Additional Instructions (optional)
+
+**Business Rules:**
+- Free Plan: Maximum 3 profiles.
+- Paid Plan: Use configured limits when available; until then, maximum 3 profiles for all plans.
+- Users can CRUD their own profiles.
+- Preferred and avoided words are stored as individual tags.
+- Selected profile information must be included in AI prompts when content generation is implemented.
+- Profile selection is optional.
+- Content generation is not currently present; add the profile selector when that page is implemented.
+
+**Database:** `brand_profiles`
+
+## 2. Content Repurposing
+
+**Purpose:** Transform one source content into platform-specific content.
+
+**Supported Platforms:**
+- Facebook
+- Instagram
+- LinkedIn
+- X / Twitter
+- Short Video Script
+- Email Newsletter
+- TikTok
+
+**Business Rules:**
+- Support single-platform and multiple-platform generation.
+- Free Plan: 3 successful generations per platform.
+- Paid Plan: Configurable limits per platform.
+- Each successful platform output counts as 1 usage.
+- Failed generations do not consume usage.
+- Track usage separately for each user and platform.
+- Allow optional Brand Profile selection.
+- Save each platform output separately.
+
+**Database:**
+- `repurposing_jobs`
+- `repurposing_outputs`
+- `repurposing_usage`
+
+## 3. Content Editor & AI Assistant
+
+**Purpose:** Edit generated content without navigating to another page.
+
+**AI Actions:**
+- Rewrite Selected Text
+- Expand Paragraph
+- Shorten Content
+- Fix Grammar
+- Change Tone
+- Improve Headline
+- Add CTA
+- Make It More Engaging
+- Translate Language
+
+**Business Rules:**
+- Support selected-text and full-content editing.
+- Show AI results before applying changes.
+- User must Accept or Reject AI suggestions.
+- AI editing does not consume credits.
+- Add Word Counter and Character Counter.
+- Keep Editor and Generate Result in the same workspace.
+
+**Autosave & Version History:**
+- Autosave after 1–2 seconds debounce.
+- Show Saving, Saved, and Save Failed status.
+- Do not create versions for every autosave.
+- Create versions after AI edits are accepted, manual checkpoints, and restores.
+- Restoring a version creates a new version; never overwrite history.
+- Prevent data loss and stale autosave overwrites.
+
+**Database:**
+- `content_versions`
+- Reuse existing `generated_contents` for current content.
+
+## 4. Implementation Phases
+
+**Phase 1:** Brand Profile CRUD, plan limits, AI prompt integration.
+
+**Phase 2:** Content Repurposing, platform-specific prompts, usage limits, output history.
+
+**Phase 3:** Content Editor, AI actions, autosave, Version History, Restore.
+
+**Phase 4:** Testing, authorization, usage-limit protection, and mobile responsiveness.
+
+## 5. Technical Rules
+
+- Use existing Laravel + Vue 3 + Inertia.js + Tailwind CSS + MySQL architecture.
+- All Gemini API calls must go through Laravel.
+- Enforce ownership and plan limits on the backend.
+- Use database transactions and locking for usage updates.
+- Do not modify existing credit rules.
+- Keep the UI responsive and mobile-friendly.
