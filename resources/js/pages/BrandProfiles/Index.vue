@@ -1,6 +1,17 @@
 <script setup lang="ts">
 import { Head, Link, router } from '@inertiajs/vue3';
 import { Building2, Pencil, Plus, Trash2 } from '@lucide/vue';
+import { ref } from 'vue';
+import { Button } from '@/components/ui/button';
+import {
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog';
 
 type BrandProfile = {
     id: number;
@@ -24,6 +35,9 @@ defineProps<{
     canCreate: boolean;
 }>();
 
+const profileToDelete = ref<BrandProfile | null>(null);
+const isDeleteDialogOpen = ref(false);
+
 defineOptions({
     layout: {
         breadcrumbs: [{ title: 'Brand profiles', href: '/brands' }],
@@ -31,9 +45,21 @@ defineOptions({
 });
 
 function deleteProfile(profile: BrandProfile): void {
-    if (window.confirm(`Delete the "${profile.brand_name}" brand profile?`)) {
-        router.delete(`/brands/${profile.id}`);
+    profileToDelete.value = profile;
+    isDeleteDialogOpen.value = true;
+}
+
+function confirmDelete(): void {
+    if (!profileToDelete.value) {
+        return;
     }
+
+    router.delete(`/brands/${profileToDelete.value.id}`, {
+        onFinish: () => {
+            isDeleteDialogOpen.value = false;
+            profileToDelete.value = null;
+        },
+    });
 }
 </script>
 
@@ -179,5 +205,26 @@ function deleteProfile(profile: BrandProfile): void {
                 Create your first brand profile
             </Link>
         </section>
+
+        <Dialog v-model:open="isDeleteDialogOpen">
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>Delete brand profile?</DialogTitle>
+                    <DialogDescription>
+                        Are you sure you want to delete
+                        <strong>{{ profileToDelete?.brand_name }}</strong
+                        >? This action cannot be undone.
+                    </DialogDescription>
+                </DialogHeader>
+                <DialogFooter>
+                    <DialogClose as-child>
+                        <Button variant="outline">Cancel</Button>
+                    </DialogClose>
+                    <Button variant="destructive" @click="confirmDelete">
+                        Delete profile
+                    </Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
     </main>
 </template>
