@@ -81,6 +81,14 @@ class User extends Authenticatable implements PasskeyUser
         return $this->hasMany(BrandProfile::class);
     }
 
+    /**
+     * @return HasMany<BrandProfileUndoAction, $this>
+     */
+    public function brandProfileUndoActions(): HasMany
+    {
+        return $this->hasMany(BrandProfileUndoAction::class);
+    }
+
     public function isAdmin(): bool
     {
         return $this->role === UserRole::Admin;

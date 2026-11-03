@@ -1,5 +1,6 @@
 import { router } from '@inertiajs/vue3';
 import { toast } from 'vue-sonner';
+import UndoToast from '@/components/UndoToast.vue';
 import type { FlashToast } from '@/types/ui';
 
 export function initializeFlashToast(): void {
@@ -8,6 +9,35 @@ export function initializeFlashToast(): void {
         const data = flash?.toast as FlashToast | undefined;
 
         if (!data) {
+            return;
+        }
+
+        if (data.undoToken) {
+            const undoToken = data.undoToken;
+
+            toast[data.type](data.message, {
+                component: UndoToast,
+                componentProps: {
+                    message: data.message,
+                    onUndo: () => {
+                        router.post(
+                            `/brands/undo/${encodeURIComponent(undoToken)}`,
+                            {},
+                            {
+                                preserveScroll: true,
+                                onError: (errors) => {
+                                    toast.error(
+                                        errors.undo ??
+                                            'This change could not be undone.',
+                                    );
+                                },
+                            },
+                        );
+                    },
+                },
+                duration: 5000,
+            });
+
             return;
         }
 

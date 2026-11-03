@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\BrandProfile;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
 use Tests\TestCase;
 
 class BrandProfilesTest extends TestCase
@@ -47,6 +48,139 @@ class BrandProfilesTest extends TestCase
             ->assertRedirect(route('brands.index'));
 
         $this->assertDatabaseMissing('brand_profiles', ['id' => $profile->id]);
+    }
+
+    public function test_user_can_undo_brand_profile_creation_from_the_success_flash(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->post(route('brands.store'), $this->profileData());
+        $token = $this->undoTokenFromFlash();
+
+        $this->assertDatabaseCount('brand_profiles', 1);
+        $this->assertSame($token, session()->get('inertia.flash_data')['toast']['undoToken']);
+
+        $this->post(route('brands.undo', $token))
+            ->assertRedirect(route('brands.index'));
+
+        $this->assertDatabaseCount('brand_profiles', 0);
+        $this->assertDatabaseCount('brand_profile_undo_actions', 0);
+    }
+
+    public function test_user_can_undo_brand_profile_update(): void
+    {
+        $user = User::factory()->create();
+        $profile = $user->brandProfiles()->create($this->profileData());
+
+        $response = $this->actingAs($user)->put(route('brands.update', $profile), [
+            ...$this->profileData(),
+            'brand_name' => 'Updated Coffee',
+        ]);
+        $token = $this->undoTokenFromFlash();
+
+        $this->assertDatabaseHas('brand_profiles', [
+            'id' => $profile->id,
+            'brand_name' => 'Updated Coffee',
+        ]);
+
+        $this->post(route('brands.undo', $token))
+            ->assertRedirect(route('brands.index'));
+
+        $this->assertDatabaseHas('brand_profiles', [
+            'id' => $profile->id,
+            'brand_name' => 'Cloud Coffee',
+        ]);
+    }
+
+    public function test_user_can_undo_brand_profile_deletion_and_restore_its_id(): void
+    {
+        $user = User::factory()->create();
+        $profile = $user->brandProfiles()->create($this->profileData());
+        $id = $profile->id;
+
+        $response = $this->actingAs($user)->delete(route('brands.destroy', $profile));
+        $token = $this->undoTokenFromFlash();
+
+        $this->assertDatabaseMissing('brand_profiles', ['id' => $id]);
+
+        $this->post(route('brands.undo', $token))
+            ->assertRedirect(route('brands.index'));
+
+        $this->assertDatabaseHas('brand_profiles', [
+            'id' => $id,
+            'brand_name' => 'Cloud Coffee',
+        ]);
+    }
+
+    public function test_undo_action_expires_after_five_seconds(): void
+    {
+        $user = User::factory()->create();
+        $response = $this->actingAs($user)->post(route('brands.store'), $this->profileData());
+        $token = $this->undoTokenFromFlash();
+
+        Carbon::setTestNow(now()->addSeconds(6));
+
+        try {
+            $this->from(route('brands.index'))
+                ->post(route('brands.undo', $token))
+                ->assertRedirect(route('brands.index'))
+                ->assertSessionHasErrors('undo');
+        } finally {
+            Carbon::setTestNow();
+        }
+
+        $this->assertDatabaseHas('brand_profiles', ['brand_name' => 'Cloud Coffee']);
+    }
+
+    public function test_undo_token_cannot_be_used_by_another_user(): void
+    {
+        $owner = User::factory()->create();
+        $anotherUser = User::factory()->create();
+        $response = $this->actingAs($owner)->post(route('brands.store'), $this->profileData());
+        $token = $this->undoTokenFromFlash();
+
+        $this->from(route('brands.index'))
+            ->actingAs($anotherUser)
+            ->post(route('brands.undo', $token))
+            ->assertRedirect(route('brands.index'))
+            ->assertSessionHasErrors('undo');
+
+        $this->assertDatabaseHas('brand_profiles', [
+            'user_id' => $owner->id,
+            'brand_name' => 'Cloud Coffee',
+        ]);
+    }
+
+    public function test_pending_delete_reserves_profile_limit_until_undo_expires_or_is_used(): void
+    {
+        $user = User::factory()->create();
+        $profiles = collect(range(1, config('brand_profiles.max_per_user')))
+            ->map(fn (int $number) => $user->brandProfiles()->create([
+                ...$this->profileData(),
+                'brand_name' => 'Brand '.$number,
+            ]));
+
+        $response = $this->actingAs($user)->delete(route('brands.destroy', $profiles->first()));
+        $token = $this->undoTokenFromFlash();
+
+        $this->get(route('brands.index'))
+            ->assertInertia(fn ($page) => $page->where('canCreate', false));
+
+        $this->from(route('brands.index'))
+            ->post(route('brands.undo', $token))
+            ->assertRedirect(route('brands.index'));
+
+        $this->assertSame(config('brand_profiles.max_per_user'), $user->brandProfiles()->count());
+    }
+
+    private function undoTokenFromFlash(): string
+    {
+        $flash = session()->get('inertia.flash_data', []);
+        $token = $flash['toast']['undoToken'] ?? null;
+
+        $this->assertIsString($token);
+
+        return $token;
     }
 
     public function test_user_cannot_edit_or_delete_another_users_brand_profile(): void

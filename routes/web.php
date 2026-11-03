@@ -13,6 +13,7 @@ Route::inertia('/', 'Welcome')->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', DashboardController::class)->name('dashboard');
+    Route::post('brands/undo/{token}', [BrandProfileController::class, 'undo'])->name('brands.undo');
     Route::resource('brands', BrandProfileController::class)->except('show');
     Route::resource('tones', CustomToneController::class)->except('show');
 
