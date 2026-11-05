@@ -3,8 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\CustomTone;
+use App\Models\CustomToneUndoAction;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -12,6 +16,8 @@ class CustomToneController extends Controller
 {
     public function index(Request $request): Response
     {
+        CustomToneUndoAction::query()->where('expires_at', '<=', now())->delete();
+
         return Inertia::render('Tones/Index', [
             'tones' => $request->user()->customTones()->latest()->get(),
         ]);
@@ -54,9 +60,63 @@ class CustomToneController extends Controller
 
     public function destroy(Request $request, CustomTone $tone): RedirectResponse
     {
-        $this->findOwnedTone($request, $tone)->delete();
+        $user = $request->user();
+        $ownedTone = $this->findOwnedTone($request, $tone);
+        $token = DB::transaction(function () use ($user, $ownedTone): string {
+            $tone = $user->customTones()->whereKey($ownedTone->id)->lockForUpdate()->firstOrFail();
+            $tone->delete();
 
-        Inertia::flash('toast', ['type' => 'success', 'message' => 'Tone deleted.']);
+            $user->customToneUndoActions()->where('custom_tone_id', $tone->id)->delete();
+            $token = Str::random(64);
+            $user->customToneUndoActions()->create([
+                'token_hash' => hash('sha256', $token),
+                'custom_tone_id' => $tone->id,
+                'expires_at' => now()->addSeconds((int) config('brand_profiles.undo_seconds', 5)),
+            ]);
+
+            return $token;
+        });
+
+        Inertia::flash('toast', [
+            'type' => 'success',
+            'message' => 'Tone deleted.',
+            'undoUrl' => route('tones.undo', $token, false),
+        ]);
+
+        return to_route('tones.index');
+    }
+
+    public function undo(Request $request, string $token): RedirectResponse
+    {
+        DB::transaction(function () use ($request, $token): void {
+            $undo = $request->user()->customToneUndoActions()
+                ->where('token_hash', hash('sha256', $token))
+                ->lockForUpdate()
+                ->first();
+
+            if (! $undo || $undo->expires_at->isPast()) {
+                throw ValidationException::withMessages([
+                    'undo' => 'This tone can no longer be restored.',
+                ]);
+            }
+
+            $tone = $request->user()->customTones()
+                ->withTrashed()
+                ->whereKey($undo->custom_tone_id)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            if (! $tone->trashed()) {
+                throw ValidationException::withMessages([
+                    'undo' => 'This tone has already been restored.',
+                ]);
+            }
+
+            $tone->restore();
+            $undo->delete();
+        });
+
+        Inertia::flash('toast', ['type' => 'info', 'message' => 'Tone deletion undone.']);
 
         return to_route('tones.index');
     }

@@ -74,6 +74,14 @@ class User extends Authenticatable implements PasskeyUser
     }
 
     /**
+     * @return HasMany<CustomToneUndoAction, $this>
+     */
+    public function customToneUndoActions(): HasMany
+    {
+        return $this->hasMany(CustomToneUndoAction::class);
+    }
+
+    /**
      * @return HasMany<BrandProfile, $this>
      */
     public function brandProfiles(): HasMany
@@ -87,6 +95,14 @@ class User extends Authenticatable implements PasskeyUser
     public function brandProfileUndoActions(): HasMany
     {
         return $this->hasMany(BrandProfileUndoAction::class);
+    }
+
+    /**
+     * @return HasMany<GeneratedContent, $this>
+     */
+    public function generatedContents(): HasMany
+    {
+        return $this->hasMany(GeneratedContent::class);
     }
 
     public function isAdmin(): bool

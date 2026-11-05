@@ -12,8 +12,8 @@ export function initializeFlashToast(): void {
             return;
         }
 
-        if (data.undoToken) {
-            const undoToken = data.undoToken;
+        if (data.undoUrl) {
+            const undoUrl = data.undoUrl;
 
             toast[data.type](data.message, {
                 component: UndoToast,
@@ -21,7 +21,7 @@ export function initializeFlashToast(): void {
                     message: data.message,
                     onUndo: () => {
                         router.post(
-                            `/brands/undo/${encodeURIComponent(undoToken)}`,
+                            undoUrl,
                             {},
                             {
                                 preserveScroll: true,

@@ -95,6 +95,11 @@ Product domain is **not** started: no roles/credits, tones, generator, billing, 
 - Confirmed Gemini failure refunds exactly once.
 - History is per-user only.
 
+**Implementation notes**
+- Configure `GEMINI_API_KEY` in the server environment; `GEMINI_MODEL` and `GEMINI_TIMEOUT` are optional.
+- Generation supports social posts, marketing copy, and blog outlines, with optional owned brand profiles and custom tones.
+- Requests are rate-limited and idempotent per user/request UUID. Failed provider requests are recorded and refunded once.
+
 ---
 
 ## Phase 4 — Manual billing

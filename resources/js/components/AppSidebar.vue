@@ -2,11 +2,13 @@
 import { Link, usePage } from '@inertiajs/vue3';
 import {
     Building2,
+    FileClock,
     History,
     LayoutGrid,
     MessagesSquare,
     ScrollText,
     ShieldCheck,
+    Sparkles,
     Users,
 } from '@lucide/vue';
 import { computed } from 'vue';
@@ -42,6 +44,16 @@ const mainNavItems = computed<NavItem[]>(() => [
         title: 'Brand profiles',
         href: '/brands',
         icon: Building2,
+    },
+    {
+        title: 'Generate content',
+        href: '/generate',
+        icon: Sparkles,
+    },
+    {
+        title: 'Generation history',
+        href: '/generations',
+        icon: FileClock,
     },
 ]);
 

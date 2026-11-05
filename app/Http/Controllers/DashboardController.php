@@ -18,7 +18,11 @@ class DashboardController extends Controller
                 ->latest('created_at')
                 ->limit(5)
                 ->get(['id', 'amount', 'type', 'description', 'created_at']),
-            'recentGenerations' => [],
+            'recentGenerations' => $user->generatedContents()
+                ->where('status', 'completed')
+                ->latest()
+                ->limit(3)
+                ->get(['id', 'content_type', 'brief', 'created_at']),
         ]);
     }
 }

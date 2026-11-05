@@ -72,7 +72,7 @@ class BrandProfileController extends Controller
         Inertia::flash('toast', [
             'type' => 'success',
             'message' => 'Brand profile created.',
-            'undoToken' => $undoToken,
+            'undoUrl' => route('brands.undo', $undoToken, false),
         ]);
 
         return to_route('brands.index');
@@ -104,7 +104,7 @@ class BrandProfileController extends Controller
         Inertia::flash('toast', [
             'type' => 'success',
             'message' => 'Brand profile updated.',
-            'undoToken' => $undoToken,
+            'undoUrl' => route('brands.undo', $undoToken, false),
         ]);
 
         return to_route('brands.index');
@@ -125,7 +125,7 @@ class BrandProfileController extends Controller
         Inertia::flash('toast', [
             'type' => 'success',
             'message' => 'Brand profile deleted.',
-            'undoToken' => $undoToken,
+            'undoUrl' => route('brands.undo', $undoToken, false),
         ]);
 
         return to_route('brands.index');

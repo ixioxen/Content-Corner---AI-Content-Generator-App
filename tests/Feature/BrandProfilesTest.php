@@ -58,7 +58,7 @@ class BrandProfilesTest extends TestCase
         $token = $this->undoTokenFromFlash();
 
         $this->assertDatabaseCount('brand_profiles', 1);
-        $this->assertSame($token, session()->get('inertia.flash_data')['toast']['undoToken']);
+        $this->assertStringContainsString('/brands/undo/'.$token, session()->get('inertia.flash_data')['toast']['undoUrl']);
 
         $this->post(route('brands.undo', $token))
             ->assertRedirect(route('brands.index'));
@@ -176,7 +176,9 @@ class BrandProfilesTest extends TestCase
     private function undoTokenFromFlash(): string
     {
         $flash = session()->get('inertia.flash_data', []);
-        $token = $flash['toast']['undoToken'] ?? null;
+        $undoUrl = $flash['toast']['undoUrl'] ?? null;
+        $path = is_string($undoUrl) ? parse_url($undoUrl, PHP_URL_PATH) : null;
+        $token = is_string($path) ? basename($path) : null;
 
         $this->assertIsString($token);
 

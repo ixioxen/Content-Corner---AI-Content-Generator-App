@@ -1,2 +1,17 @@
 Learn  the how the code works all file.
 to add delete confirmation box and toast cross undo features also for custom tone .
+
+todo step
+
+အတည်ပြုပါပြီ—attached roadmap အတိုင်း Phase 3 ကို Content Generation အဖြစ်လုပ်ပြီး၊ ရှိပြီးသား Brand Profile ကိုပါ ရွေးချယ်အသုံးပြруမယ်။ Feature note မှာ Phase 3 ကို Content Editor гэж သတ်မှတ်ထားတာက roadmap နဲ့ ကွဲလွဲနေပါတယ်။ ဒီအဆင့်မှာ roadmap ကို အခြေခံထားပါမယ်။
+
+အကောင်အထည်ဖော်မယ့် အစီအစဉ်—
+
+ရှိပြီးသား credit ledger, routes, UI, tests ကိုစစ်ပြီး လိုအပ်တဲ့ credit transaction အမျိုးအစားနဲ့ configuration ကို သတ်မှတ်မယ်။ လက်ရှိ credit ပုံစံကို CreditService.php မှာ ပြန်သုံးမယ်။
+generated_contents table နဲ့ user relationship ထည့်ပြီး prompt inputs, output, optional brand/tone reference, request UUID, status зэргийг သိမ်းမယ်။
+Gemini API ကို backend ကနေသာ ခေါ်မယ့် service ထည့်မယ်။ API key ကို server မှာထားပြီး brand profile data ကိုလည်း ပိုင်ရှင်မှန်ကြောင်းစစ်ပြီး prompt ထဲထည့်မယ်။
+Generation မစခင် balance နဲ့ request ID ကို စစ်၊ credit တစ်ခုကို လုံခြုံစွာ reserve လုပ်၊ Gemini ခေါ်ဆိုမှုကို database transaction ပြင်ပမှာ လုပ်ပြီး success မှာ finalize၊ အတည်ပြုထားတဲ့ failure မှာ တစ်ကြိမ်သာ refund လုပ်မယ်။
+Social post, marketing copy, blog outline အတွက် generation form ထည့်ပြီး optional brand profile နဲ့ custom tone ရွေးနိုင်အောင်လုပ်မယ်။
+User ပိုင် generation history list/detail/delete ကိုထည့်ပြီး ownership ကို backend မှာ enforce လုပ်မယ်။
+Credit charge/refund, zero balance, duplicate request, concurrent spend, user ownership နဲ့ validation အတွက် tests ထည့်မယ်။
+Laravel tests, PHPStan, Vue type-check, lint, production build зэргээр шалгаад phase note-оо шинэчлэх.
