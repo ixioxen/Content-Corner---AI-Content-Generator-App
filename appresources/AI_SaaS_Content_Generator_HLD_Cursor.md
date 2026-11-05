@@ -31,27 +31,27 @@ User app:
 - Content Generator: social media posts, marketing copy, blog outlines
 - Custom Tones: name, description, sample content; CRUD
 - Content History: list/detail/delete own generated content
-- Billing: credit packages, payment instructions, submit payment request, status
+- Billing: credit packages, Stripe checkout, purchase status
 - Credit transaction history
 
 Admin:
 - Overview
 - User management / suspend account
-- Payment request review: approve/reject
+- Credit package management
 - Manual credit top-up with reason
 - Credit transactions, usage overview, audit logs
 
-Out of scope for MVP: automatic payment gateway, subscriptions, team workspaces, social media publishing, multiple AI providers.
+Out of scope for MVP: subscriptions, team workspaces, social media publishing, multiple AI providers.
 
 ## 5. Credit Rules (critical)
 - Successful registration grants exactly 20 credits, once.
 - One successful generation costs exactly 1 credit.
 - No balance => reject generation before calling Gemini.
 - Confirmed generation failure => refund the reserved credit exactly once.
-- Pending payment grants no credits. Admin approval grants package credits exactly once.
+- Pending or failed payment grants no credits. A verified successful Stripe payment grants package credits exactly once without admin intervention.
 - Every credit change must update `users.credits_balance` and create a `credit_transactions` ledger row in the same DB transaction.
 - Prevent negative balances and concurrent double-spend with DB transactions and row locking (`lockForUpdate`).
-- Use unique idempotency keys for signup bonus, generation charge/refund, payment approval, and admin adjustments.
+- Use unique idempotency keys for signup bonus, generation charge/refund, payment grants, and admin adjustments.
 - Do not keep a DB transaction open during a slow Gemini HTTP request. Reserve credit in a short transaction, call Gemini, then finalize or refund in another short transaction.
 - Handle timeout/unknown AI outcomes safely; do not blindly retry or refund in a way that can double-charge or double-refund.
 
@@ -76,9 +76,9 @@ This is the credit ledger; never silently edit/delete historical ledger entries.
 ### `credit_packages`
 `id`, `name`, `credits_amount`, `price_amount` (decimal), `currency`, `is_active`, timestamps.
 
-### `payment_requests`
-`id`, `user_id` FK, `credit_package_id` FK, snapshot `credits_amount`, `amount_paid`, `currency`, `payment_method`, `payment_reference`, nullable private `proof_path`, `status` (`pending`/`approved`/`rejected`), nullable `reviewed_by` FK to users, nullable `reviewed_at`, nullable `rejection_reason`, timestamps.
-Index `(status, created_at)`. Approval must be atomic and idempotent.
+### `credit_purchases`
+`id`, `user_id` FK, `credit_package_id` FK, package name/credits/price/currency snapshot, `status` (`pending`/`paid`/`failed`), nullable unique Stripe Checkout Session and PaymentIntent IDs, nullable `paid_at`/`failed_at`, timestamps.
+Index `(status, created_at)`. Verified payment completion must be atomic and idempotent.
 
 ### `admin_audit_logs`
 `id`, `admin_id` FK to users, `action`, `target_type`, `target_id`, nullable JSON `metadata`, nullable `ip_address`, `created_at`.
@@ -91,8 +91,8 @@ Validate -> create user and grant +20 ledger transaction atomically -> dashboard
 ### Generate content
 Validate input and tone ownership -> create unique request -> reserve 1 credit atomically -> call Gemini via backend service -> on success save output and finalize charge -> on confirmed failure refund once -> return updated balance and result/error.
 
-### Manual payment
-User selects active package -> server stores package/price/credits snapshot -> user submits reference and optional proof -> status pending -> admin verifies out-of-band -> approve/reject. Approval atomically changes status, adds package credits, creates ledger row, and audit log. Only pending requests may be reviewed.
+### Stripe payment
+User selects an active package -> server stores a package/price/credits snapshot and creates Stripe Checkout using server-side package data -> Stripe sends a verified event -> backend atomically marks the purchase paid and grants credits once. A definitive failed or expired checkout is marked failed and grants no credits. Admins do not review individual payments.
 
 ## 8. Routes (Laravel web + Inertia)
 Public:
@@ -104,17 +104,18 @@ Authenticated:
 - `GET /generator`, `POST /generator`
 - `GET /contents`, `GET /contents/{content}`, `DELETE /contents/{content}`
 - `resource /tones` (CRUD)
-- `GET /billing`, `POST /billing/payment-requests`
+- `GET /billing`, `POST /billing/purchases`
 - `GET /credits/transactions`
 
 Admin-only:
+- Manage credit packages (create, update, activate/deactivate)
 - `GET /admin`
 - `GET /admin/users`
 - `PATCH /admin/users/{user}/status`
 - `POST /admin/users/{user}/credits`
-- `GET /admin/payments`
-- `POST /admin/payments/{payment}/approve`
-- `POST /admin/payments/{payment}/reject`
+- `GET /admin/credit-packages`
+- `POST /admin/credit-packages`
+- `PATCH /admin/credit-packages/{creditPackage}`
 - `GET /admin/transactions`
 - `GET /admin/audit-logs`
 
@@ -134,9 +135,9 @@ Use Form Requests for validation, policies for ownership, and middleware for aut
 - Enforce per-user ownership on every read/update/delete.
 - Protect admin routes server-side; public registration must never set `role=admin`.
 - Rate-limit authentication and generation.
-- Validate uploads; payment proof files must use private storage and authorized downloads.
+- Verify Stripe webhook signatures; never grant credits based only on a browser redirect.
 - Use safe rendering, CSRF protection, and server-side validation.
-- Add tests for signup bonus, credit concurrency, generation success/failure/refund, duplicate requests, payment approval once, and user/admin authorization.
+- Add tests for signup bonus, credit concurrency, generation success/failure/refund, duplicate requests, Stripe payment success/failure and webhook retries, and user/admin authorization.
 - Configure production backups, logging, and error monitoring.
 
 ## 11. Build Order
@@ -144,14 +145,14 @@ Use Form Requests for validation, policies for ownership, and middleware for aut
 2. Auth, roles, migrations, signup bonus, credit ledger.
 3. Dashboard and custom tone CRUD.
 4. Gemini service, generation, history, safe refund flow.
-5. Manual billing and admin payment review.
+5. Credit package catalog and billing UI; then Stripe Checkout and verified webhook processing.
 6. Admin users, adjustments, usage and audit logs.
 7. Automated tests, security checks, deployment.
 
 ## 12. Assumptions / TODO
-- Currency, package prices, payment channels, and proof requirements are not decided; make them configurable, not hard-coded across the app.
+- Currency and package prices are not decided; make them configurable, not hard-coded across the app.
 - Email verification and password reset are recommended for public launch; finalize before production.
 - Admin account must be created through a secure seeder/command, not public registration.
 - Use the currently supported Gemini Flash model and confirm current quotas/terms.
-- Do not implement automatic gateway payments in the MVP.
+- Stripe is the planned payment gateway; do not add manual payment review.
 - If a requirement is ambiguous, ask before adding scope. Prefer the simplest maintainable implementation.

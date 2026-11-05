@@ -66,6 +66,14 @@ class User extends Authenticatable implements PasskeyUser
     }
 
     /**
+     * @return HasMany<CreditPurchase, $this>
+     */
+    public function creditPurchases(): HasMany
+    {
+        return $this->hasMany(CreditPurchase::class);
+    }
+
+    /**
      * @return HasMany<CustomTone, $this>
      */
     public function customTones(): HasMany

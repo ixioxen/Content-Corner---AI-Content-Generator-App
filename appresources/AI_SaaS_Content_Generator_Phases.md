@@ -102,24 +102,24 @@ Product domain is **not** started: no roles/credits, tones, generator, billing, 
 
 ---
 
-## Phase 4 — Manual billing
+## Phase 4 — Billing (package catalog first, Stripe next)
 
-**Goal:** Users buy credits by submitting proof; admins approve/reject once.
+**Goal:** Users purchase credits through Stripe automatically. Verified successful payments grant credits once; failed payments grant none.
 
 **Do**
-- Configurable `credit_packages` (name, credits, price, currency, active flag).
-- User billing: packages, payment instructions, submit request + optional private proof, status.
-- `payment_requests` with package/price/credits snapshot.
-- Admin: list pending, approve/reject. Approval is atomic and idempotent: status + package credits + ledger + audit row.
-- Pending grants no credits. Credit transaction history page for users.
-- Private storage for proof files; authorized download only.
+- Add admin-managed `credit_packages` (name, credits, price, currency, active flag); deactivate rather than delete packages.
+- Add user billing UI for active packages, balance, purchase history, and credit transaction history.
+- Store a purchase snapshot of the package name, credits, amount, and currency before checkout.
+- In the next step, integrate Stripe Checkout and verified webhooks; only verified success may grant credits, and payment failure/expiration grants none.
+- Grant purchased credits, update purchase status, and create the ledger row atomically with an idempotency key.
+- No admin review or manual payment approval.
 
 **Do not**
-- Payment gateways, subscriptions, webhooks.
+- Subscriptions or manual payment proof/review.
 
 **Exit criteria**
-- Submit → pending → approve adds package credits exactly once.
-- Reject adds no credits. Double-approve is impossible.
+- Admin can maintain packages; users see only active packages and only their own billing history.
+- Stripe Checkout and verified webhook processing grant credits exactly once on success; failed/expired payments grant none.
 
 ---
 

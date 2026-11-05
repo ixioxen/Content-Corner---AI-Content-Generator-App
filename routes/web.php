@@ -1,9 +1,11 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminAuditLogController;
+use App\Http\Controllers\Admin\AdminCreditPackageController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminTransactionController;
 use App\Http\Controllers\Admin\AdminUserController;
+use App\Http\Controllers\BillingController;
 use App\Http\Controllers\BrandProfileController;
 use App\Http\Controllers\ContentGenerationController;
 use App\Http\Controllers\CustomToneController;
@@ -15,6 +17,7 @@ Route::inertia('/', 'Welcome')->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', DashboardController::class)->name('dashboard');
+    Route::get('billing', BillingController::class)->name('billing.index');
     Route::get('generate', [ContentGenerationController::class, 'create'])->name('generations.create');
     Route::post('generate', [ContentGenerationController::class, 'store'])
         ->middleware('throttle:10,1')
@@ -34,6 +37,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/users/{user}/credits', [AdminUserController::class, 'adjustCredits'])->name('users.credits');
         Route::get('/transactions', AdminTransactionController::class)->name('transactions.index');
         Route::get('/audit-logs', AdminAuditLogController::class)->name('audit-logs.index');
+        Route::get('/credit-packages', [AdminCreditPackageController::class, 'index'])->name('credit-packages.index');
+        Route::post('/credit-packages', [AdminCreditPackageController::class, 'store'])->name('credit-packages.store');
+        Route::patch('/credit-packages/{creditPackage}', [AdminCreditPackageController::class, 'update'])->name('credit-packages.update');
     });
 });
 

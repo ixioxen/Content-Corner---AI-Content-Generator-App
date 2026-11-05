@@ -2,10 +2,12 @@
 import { Link, usePage } from '@inertiajs/vue3';
 import {
     Building2,
+    CreditCard,
     FileClock,
     History,
     LayoutGrid,
     MessagesSquare,
+    Package,
     ScrollText,
     ShieldCheck,
     Sparkles,
@@ -55,12 +57,18 @@ const mainNavItems = computed<NavItem[]>(() => [
         href: '/generations',
         icon: FileClock,
     },
+    {
+        title: 'Billing',
+        href: '/billing',
+        icon: CreditCard,
+    },
 ]);
 
 const adminNavItems: NavItem[] = [
     { title: 'Overview', href: '/admin', icon: ShieldCheck },
     { title: 'Users', href: '/admin/users', icon: Users },
     { title: 'Transactions', href: '/admin/transactions', icon: History },
+    { title: 'Credit packages', href: '/admin/credit-packages', icon: Package },
     { title: 'Audit logs', href: '/admin/audit-logs', icon: ScrollText },
 ];
 </script>
