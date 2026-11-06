@@ -93,6 +93,7 @@ Validate input and tone ownership -> create unique request -> reserve 1 credit a
 
 ### Stripe payment
 User selects an active package -> server stores a package/price/credits snapshot and creates Stripe Checkout using server-side package data -> Stripe sends a verified event -> backend atomically marks the purchase paid and grants credits once. A definitive failed or expired checkout is marked failed and grants no credits. Admins do not review individual payments.
+Configure `STRIPE_KEY`, `STRIPE_SECRET`, and `STRIPE_WEBHOOK_SECRET` on the server. Register `POST /stripe/webhook` in Stripe for `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `checkout.session.async_payment_failed`, and `checkout.session.expired`.
 
 ## 8. Routes (Laravel web + Inertia)
 Public:

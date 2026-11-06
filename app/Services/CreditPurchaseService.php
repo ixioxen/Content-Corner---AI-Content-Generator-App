@@ -42,11 +42,12 @@ class CreditPurchaseService
         CreditService $credits,
         ?string $checkoutSessionId = null,
         ?string $paymentIntentId = null,
+        bool $allowPreviouslyFailed = false,
     ): CreditPurchase {
-        return DB::transaction(function () use ($checkoutSessionId, $credits, $paymentIntentId, $purchase): CreditPurchase {
+        return DB::transaction(function () use ($allowPreviouslyFailed, $checkoutSessionId, $credits, $paymentIntentId, $purchase): CreditPurchase {
             $lockedPurchase = CreditPurchase::query()->lockForUpdate()->findOrFail($purchase->id);
 
-            if ($lockedPurchase->status !== 'pending') {
+            if ($lockedPurchase->status === 'paid' || ($lockedPurchase->status !== 'pending' && ! $allowPreviouslyFailed)) {
                 return $lockedPurchase;
             }
 
@@ -71,14 +72,15 @@ class CreditPurchaseService
         });
     }
 
-    public function markPaymentFailed(CreditPurchase $purchase): CreditPurchase
+    public function markPaymentFailed(CreditPurchase $purchase, ?string $checkoutSessionId = null): CreditPurchase
     {
-        return DB::transaction(function () use ($purchase): CreditPurchase {
+        return DB::transaction(function () use ($checkoutSessionId, $purchase): CreditPurchase {
             $lockedPurchase = CreditPurchase::query()->lockForUpdate()->findOrFail($purchase->id);
 
             if ($lockedPurchase->status === 'pending') {
                 $lockedPurchase->update([
                     'status' => 'failed',
+                    'stripe_checkout_session_id' => $checkoutSessionId,
                     'failed_at' => now(),
                 ]);
             }

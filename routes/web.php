@@ -11,13 +11,23 @@ use App\Http\Controllers\ContentGenerationController;
 use App\Http\Controllers\CustomToneController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GeneratedContentController;
+use App\Http\Controllers\StripeCheckoutController;
+use App\Http\Controllers\StripeWebhookController;
+use App\Http\Controllers\VerifyCreditPurchaseController;
 use Illuminate\Support\Facades\Route;
 
 Route::inertia('/', 'Welcome')->name('home');
+Route::post('stripe/webhook', StripeWebhookController::class)->name('stripe.webhook');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', DashboardController::class)->name('dashboard');
     Route::get('billing', BillingController::class)->name('billing.index');
+    Route::post('billing/purchases', StripeCheckoutController::class)
+        ->middleware('throttle:5,1')
+        ->name('billing.purchases.store');
+    Route::post('billing/purchases/{purchase}/verify', VerifyCreditPurchaseController::class)
+        ->middleware('throttle:10,1')
+        ->name('billing.purchases.verify');
     Route::get('generate', [ContentGenerationController::class, 'create'])->name('generations.create');
     Route::post('generate', [ContentGenerationController::class, 'store'])
         ->middleware('throttle:10,1')

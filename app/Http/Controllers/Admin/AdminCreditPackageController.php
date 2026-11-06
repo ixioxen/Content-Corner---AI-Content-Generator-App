@@ -6,9 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Models\AdminAuditLog;
 use App\Models\CreditPackage;
 use App\Models\User;
+use App\Services\StripeCurrency;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -87,6 +89,14 @@ class AdminCreditPackageController extends Controller
             'is_active' => ['required', 'boolean'],
         ]);
         $data['currency'] = strtoupper($data['currency']);
+
+        try {
+            StripeCurrency::toMinorUnits((string) $data['price_amount'], $data['currency']);
+        } catch (\InvalidArgumentException $exception) {
+            throw ValidationException::withMessages([
+                'price_amount' => $exception->getMessage(),
+            ]);
+        }
 
         return $data;
     }

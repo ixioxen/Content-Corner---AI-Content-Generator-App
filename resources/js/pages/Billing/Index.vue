@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { Head, Link } from '@inertiajs/vue3';
+import { Head, Link, router, useForm } from '@inertiajs/vue3';
 import { ArrowLeft, CreditCard, Wallet } from '@lucide/vue';
+import { ref } from 'vue';
 
 type Package = {
     id: number;
@@ -17,6 +18,7 @@ type Purchase = {
     price_amount: string;
     currency: string;
     status: 'pending' | 'paid' | 'failed';
+    can_verify: boolean;
     created_at: string;
 };
 
@@ -32,10 +34,16 @@ type PaginationLink = { url: string | null; label: string; active: boolean };
 
 defineProps<{
     creditsBalance: number;
+    checkoutAvailable: boolean;
+    checkoutResult: 'complete' | 'cancelled' | null;
     packages: Package[];
     purchases: Purchase[];
     transactions: { data: Transaction[]; links: PaginationLink[]; current_page: number; last_page: number };
 }>();
+
+const checkoutForm = useForm<{ package_id: number | null; checkout?: string }>({ package_id: null });
+const verifyingPurchaseId = ref<number | null>(null);
+const verifyError = ref('');
 
 defineOptions({
     layout: {
@@ -44,11 +52,26 @@ defineOptions({
 });
 
 function formatPrice(amount: string, currency: string): string {
-    return `${currency} ${Number(amount).toFixed(2)}`;
+    return new Intl.NumberFormat(undefined, { style: 'currency', currency }).format(Number(amount));
 }
 
 function formatDate(date: string): string {
     return new Intl.DateTimeFormat(undefined, { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(date));
+}
+
+function startCheckout(packageId: number): void {
+    checkoutForm.package_id = packageId;
+    checkoutForm.post('/billing/purchases');
+}
+
+function verifyPurchase(purchaseId: number): void {
+    verifyingPurchaseId.value = purchaseId;
+    verifyError.value = '';
+    router.post(`/billing/purchases/${purchaseId}/verify`, {}, {
+        preserveScroll: true,
+        onError: (errors) => { verifyError.value = errors.purchase ?? 'Could not verify this payment.'; },
+        onFinish: () => { verifyingPurchaseId.value = null; },
+    });
 }
 </script>
 
@@ -72,17 +95,37 @@ function formatDate(date: string): string {
             </div>
         </section>
 
+        <p v-if="checkoutResult === 'complete'" class="rounded-md border border-emerald-600/30 bg-emerald-50 p-4 text-sm text-emerald-900 dark:bg-emerald-950 dark:text-emerald-100">
+            Checkout completed. Your credits will appear after Stripe confirms the payment.
+        </p>
+        <p v-else-if="checkoutResult === 'cancelled'" class="rounded-md border p-4 text-sm text-muted-foreground">
+            Checkout was canceled. No credits were added.
+        </p>
+        <p v-if="checkoutForm.errors.checkout" class="rounded-md border border-destructive/40 p-4 text-sm text-destructive" role="alert">
+            {{ checkoutForm.errors.checkout }}
+        </p>
+        <p v-if="verifyError" class="rounded-md border border-destructive/40 p-4 text-sm text-destructive" role="alert">
+            {{ verifyError }}
+        </p>
+
         <section class="space-y-4">
             <div>
                 <h2 class="text-xl font-semibold">Credit packages</h2>
-                <p class="mt-1 text-sm text-muted-foreground">Checkout will be available after Stripe is connected.</p>
+                <p class="mt-1 text-sm text-muted-foreground">Pay securely through Stripe. Credits are added after payment is confirmed.</p>
             </div>
             <div v-if="packages.length" class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
                 <article v-for="creditPackage in packages" :key="creditPackage.id" class="flex flex-col rounded-xl border p-5">
                     <h3 class="text-lg font-semibold">{{ creditPackage.name }}</h3>
                     <p class="mt-4 text-3xl font-semibold tabular-nums">{{ creditPackage.credits_amount }} <span class="text-base font-normal text-muted-foreground">credits</span></p>
                     <p class="mt-2 text-sm text-muted-foreground">{{ formatPrice(creditPackage.price_amount, creditPackage.currency) }}</p>
-                    <button type="button" disabled class="mt-6 h-10 cursor-not-allowed rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground opacity-50">Stripe checkout coming soon</button>
+                    <button
+                        type="button"
+                        class="mt-6 h-10 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+                        :disabled="!checkoutAvailable || checkoutForm.processing"
+                        @click="startCheckout(creditPackage.id)"
+                    >
+                        {{ checkoutForm.processing ? 'Connecting to Stripe…' : checkoutAvailable ? 'Buy credits' : 'Payments unavailable' }}
+                    </button>
                 </article>
             </div>
             <p v-else class="rounded-xl border px-6 py-10 text-center text-sm text-muted-foreground">No credit packages are currently available.</p>
@@ -91,7 +134,7 @@ function formatDate(date: string): string {
         <section class="space-y-4">
             <div>
                 <h2 class="text-xl font-semibold">Purchase history</h2>
-                <p class="mt-1 text-sm text-muted-foreground">Purchases will appear here after checkout is enabled.</p>
+                <p class="mt-1 text-sm text-muted-foreground">Pending payments can be safely verified with Stripe here.</p>
             </div>
             <div v-if="purchases.length" class="divide-y border-y">
                 <article v-for="purchase in purchases" :key="purchase.id" class="flex flex-wrap items-center justify-between gap-3 py-4">
@@ -99,7 +142,18 @@ function formatDate(date: string): string {
                         <p class="font-medium">{{ purchase.package_name }} · {{ purchase.credits_amount }} credits</p>
                         <p class="mt-1 text-sm text-muted-foreground">{{ formatPrice(purchase.price_amount, purchase.currency) }} · {{ formatDate(purchase.created_at) }}</p>
                     </div>
-                    <span class="rounded border px-2 py-1 text-xs capitalize" :class="purchase.status === 'paid' ? 'text-emerald-700 dark:text-emerald-400' : purchase.status === 'failed' ? 'text-destructive' : 'text-muted-foreground'">{{ purchase.status }}</span>
+                    <div class="flex items-center gap-3">
+                        <span class="rounded border px-2 py-1 text-xs capitalize" :class="purchase.status === 'paid' ? 'text-emerald-700 dark:text-emerald-400' : purchase.status === 'failed' ? 'text-destructive' : 'text-muted-foreground'">{{ purchase.status }}</span>
+                        <button
+                            v-if="purchase.status === 'pending' && purchase.can_verify"
+                            type="button"
+                            class="h-9 rounded-md border px-3 text-sm font-medium hover:bg-muted disabled:opacity-50"
+                            :disabled="verifyingPurchaseId !== null"
+                            @click="verifyPurchase(purchase.id)"
+                        >
+                            {{ verifyingPurchaseId === purchase.id ? 'Checking…' : 'Verify payment' }}
+                        </button>
+                    </div>
                 </article>
             </div>
             <p v-else class="rounded-xl border px-6 py-8 text-center text-sm text-muted-foreground">No purchases yet.</p>

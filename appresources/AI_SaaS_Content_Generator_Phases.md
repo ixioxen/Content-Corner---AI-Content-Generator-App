@@ -102,7 +102,7 @@ Product domain is **not** started: no roles/credits, tones, generator, billing, 
 
 ---
 
-## Phase 4 — Billing (package catalog first, Stripe next)
+## Phase 4 — Stripe billing
 
 **Goal:** Users purchase credits through Stripe automatically. Verified successful payments grant credits once; failed payments grant none.
 
@@ -110,7 +110,7 @@ Product domain is **not** started: no roles/credits, tones, generator, billing, 
 - Add admin-managed `credit_packages` (name, credits, price, currency, active flag); deactivate rather than delete packages.
 - Add user billing UI for active packages, balance, purchase history, and credit transaction history.
 - Store a purchase snapshot of the package name, credits, amount, and currency before checkout.
-- In the next step, integrate Stripe Checkout and verified webhooks; only verified success may grant credits, and payment failure/expiration grants none.
+- Use Stripe Checkout and verified webhooks; only verified success may grant credits, and payment failure/expiration grants none.
 - Grant purchased credits, update purchase status, and create the ledger row atomically with an idempotency key.
 - No admin review or manual payment approval.
 
