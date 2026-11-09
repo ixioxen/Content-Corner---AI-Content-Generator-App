@@ -119,7 +119,12 @@ function formatPrice(amount: string, currency: string): string {
         <div class="mx-auto max-w-6xl px-5 sm:px-8">
             <header class="site-header flex items-center justify-between gap-4 py-5">
                 <a href="#home" class="brand flex shrink-0 items-center gap-2.5" aria-label="Contentry home">
-                    <span class="brand-icon"><Sparkles class="h-4 w-4" /></span>
+                    <span class="brand-icon">
+                        <svg viewBox="0 0 100 100" fill="currentColor" aria-hidden="true">
+                            <path d="M75 8H42A34 34 0 0 0 8 42v16a34 34 0 0 0 34 34h33V73H42a15 15 0 0 1-15-15V42a15 15 0 0 1 15-15h33V8Z" />
+                            <path d="M72 31c3 13 10 21 24 24-14 3-21 11-24 24-3-13-10-21-24-24 14-3 21-11 24-24Z" />
+                        </svg>
+                    </span>
                     <span class="text-lg">Content Corner</span>
                 </a>
 
@@ -345,7 +350,12 @@ function formatPrice(amount: string, currency: string): string {
 
             <footer class="site-footer flex flex-col gap-4 border-t border-black/10 py-6 text-xs text-black/55 sm:flex-row sm:items-center sm:justify-between">
                 <a href="#home" class="brand flex items-center gap-2">
-                    <span class="brand-icon footer-brand-icon"><Sparkles class="h-3.5 w-3.5" /></span>
+                    <span class="brand-icon footer-brand-icon">
+                        <svg viewBox="0 0 100 100" fill="currentColor" aria-hidden="true">
+                            <path d="M75 8H42A34 34 0 0 0 8 42v16a34 34 0 0 0 34 34h33V73H42a15 15 0 0 1-15-15V42a15 15 0 0 1 15-15h33V8Z" />
+                            <path d="M72 31c3 13 10 21 24 24-14 3-21 11-24 24-3-13-10-21-24-24 14-3 21-11 24-24Z" />
+                        </svg>
+                    </span>
                     <span>© Contentry. All rights reserved.</span>
                 </a>
                 <nav aria-label="Footer navigation" class="flex flex-wrap gap-5">
@@ -393,6 +403,11 @@ function formatPrice(amount: string, currency: string): string {
     width: 29px;
     height: 29px;
     border-radius: 9px;
+}
+
+.brand-icon svg {
+    width: 21px;
+    height: 21px;
 }
 
 .nav-link {
@@ -877,6 +892,11 @@ function formatPrice(amount: string, currency: string): string {
     width: 24px;
     height: 24px;
     border-radius: 7px;
+}
+
+.footer-brand-icon svg {
+    width: 18px;
+    height: 18px;
 }
 
 @media (max-width: 639px) {

@@ -77,7 +77,7 @@ const adminNavItems: NavItem[] = [
     <Sidebar
         collapsible="icon"
         variant="inset"
-        class="border-sidebar-border/70 border-r"
+        class="workspace-sidebar border-r"
     >
         <SidebarHeader class="border-sidebar-border/70 border-b px-3 py-4">
             <SidebarMenu>
@@ -110,3 +110,56 @@ const adminNavItems: NavItem[] = [
     </Sidebar>
     <slot />
 </template>
+
+<style scoped>
+.workspace-sidebar {
+    --sidebar: #000;
+    --sidebar-background: #000;
+    --sidebar-foreground: #fff;
+    --sidebar-primary: #fff;
+    --sidebar-primary-foreground: #000;
+    --sidebar-accent: #1d1d1d;
+    --sidebar-accent-foreground: #fff;
+    --sidebar-border: #262626;
+    --sidebar-ring: #a3a3a3;
+    --muted-foreground: #a3a3a3;
+}
+
+.workspace-sidebar :deep([data-slot='sidebar']) {
+    color: #fff;
+    background: #000;
+}
+
+.workspace-sidebar :deep([data-slot='sidebar-menu-button']) {
+    color: #ccc;
+}
+
+.workspace-sidebar :deep([data-slot='sidebar-menu-button']:hover),
+.workspace-sidebar
+    :deep([data-slot='sidebar-menu-button'][data-active='true']) {
+    color: #fff;
+}
+
+.workspace-sidebar
+    :deep([data-slot='sidebar-menu-button'][data-active='true']) {
+    background: #202020;
+}
+
+.workspace-sidebar :deep([data-slot='sidebar-group-label']) {
+    color: #888;
+}
+
+:global([data-mobile='true'][data-sidebar='sidebar']) {
+    --sidebar: #000;
+    --sidebar-background: #000;
+    --sidebar-foreground: #fff;
+    --sidebar-primary: #fff;
+    --sidebar-primary-foreground: #000;
+    --sidebar-accent: #1d1d1d;
+    --sidebar-accent-foreground: #fff;
+    --sidebar-border: #262626;
+    --sidebar-ring: #a3a3a3;
+    color: #fff;
+    background: #000;
+}
+</style>

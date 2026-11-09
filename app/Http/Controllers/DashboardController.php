@@ -14,6 +14,10 @@ class DashboardController extends Controller
 
         return Inertia::render('Dashboard', [
             'creditsBalance' => $user->credits_balance,
+            'generationsCount' => $user->generatedContents()
+                ->where('status', 'completed')
+                ->count(),
+            'customTonesCount' => $user->customTones()->count(),
             'recentTransactions' => $user->creditTransactions()
                 ->latest('created_at')
                 ->limit(5)
