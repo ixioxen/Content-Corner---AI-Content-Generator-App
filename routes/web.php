@@ -11,12 +11,13 @@ use App\Http\Controllers\ContentGenerationController;
 use App\Http\Controllers\CustomToneController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GeneratedContentController;
+use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\StripeCheckoutController;
 use App\Http\Controllers\StripeWebhookController;
 use App\Http\Controllers\VerifyCreditPurchaseController;
 use Illuminate\Support\Facades\Route;
 
-Route::inertia('/', 'Welcome')->name('home');
+Route::get('/', LandingPageController::class)->name('home');
 Route::post('stripe/webhook', StripeWebhookController::class)->name('stripe.webhook');
 
 Route::middleware(['auth', 'verified'])->group(function () {
