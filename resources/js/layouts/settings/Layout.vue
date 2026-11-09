@@ -29,25 +29,27 @@ const { isCurrentOrParentUrl } = useCurrentUrl();
 </script>
 
 <template>
-    <div class="px-4 py-6">
+    <div class="space-y-6 p-4 py-6 sm:p-6">
         <Heading
             title="Settings"
             description="Manage your profile and account settings"
         />
 
-        <div class="flex flex-col lg:flex-row lg:space-x-12">
-            <aside class="w-full max-w-xl lg:w-48">
-                <nav
-                    class="flex flex-col space-y-1 space-x-0"
-                    aria-label="Settings"
-                >
+        <div class="flex flex-col gap-6 lg:flex-row">
+            <aside
+                class="w-full shrink-0 rounded-2xl border border-neutral-200 bg-white p-3 shadow-sm lg:w-52"
+            >
+                <nav class="flex flex-col gap-1" aria-label="Settings">
                     <Button
                         v-for="item in sidebarNavItems"
                         :key="toUrl(item.href)"
                         variant="ghost"
                         :class="[
-                            'w-full justify-start',
-                            { 'bg-muted': isCurrentOrParentUrl(item.href) },
+                            'w-full justify-start rounded-xl text-neutral-600 hover:bg-neutral-100 hover:text-black',
+                            {
+                                'bg-black text-white hover:bg-neutral-800 hover:text-white':
+                                    isCurrentOrParentUrl(item.href),
+                            },
                         ]"
                         as-child
                     >
@@ -59,10 +61,12 @@ const { isCurrentOrParentUrl } = useCurrentUrl();
                 </nav>
             </aside>
 
-            <Separator class="my-6 lg:hidden" />
+            <Separator class="my-0 lg:hidden" />
 
-            <div class="flex-1 md:max-w-2xl">
-                <section class="max-w-xl space-y-12">
+            <div class="min-w-0 flex-1">
+                <section
+                    class="max-w-3xl space-y-8 rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm sm:p-7"
+                >
                     <slot />
                 </section>
             </div>

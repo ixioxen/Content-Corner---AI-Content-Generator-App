@@ -56,10 +56,12 @@ function deleteGeneration(generation: Generation): void {
     <main class="mx-auto w-full max-w-6xl space-y-8 p-6 lg:p-10">
         <header class="flex flex-wrap items-end justify-between gap-4">
             <div>
-                <p class="text-muted-foreground text-sm font-medium">
+                <p
+                    class="text-muted-foreground text-xs font-semibold tracking-[0.16em] uppercase"
+                >
                     Saved results
                 </p>
-                <h1 class="mt-1 text-3xl font-semibold tracking-tight">
+                <h1 class="mt-2 text-3xl font-bold tracking-tight">
                     Generation history
                 </h1>
                 <p class="text-muted-foreground mt-2 text-sm">
@@ -68,7 +70,7 @@ function deleteGeneration(generation: Generation): void {
             </div>
             <Link
                 href="/generate"
-                class="bg-primary text-primary-foreground inline-flex h-10 items-center gap-2 rounded-md px-4 text-sm font-medium hover:opacity-90"
+                class="inline-flex h-11 items-center gap-2 rounded-full bg-black px-5 text-sm font-semibold text-white transition hover:bg-neutral-800"
             >
                 <Sparkles class="size-4" />
                 Generate content
@@ -79,13 +81,13 @@ function deleteGeneration(generation: Generation): void {
             <article
                 v-for="generation in generations.data"
                 :key="generation.id"
-                class="rounded-xl border p-5"
+                class="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm transition hover:border-neutral-300 sm:p-6"
             >
                 <div class="flex flex-wrap items-start justify-between gap-4">
                     <div class="min-w-0 flex-1">
                         <div class="flex flex-wrap items-center gap-2">
                             <span
-                                class="bg-muted rounded-md px-2 py-1 text-xs font-medium"
+                                class="rounded-full bg-neutral-100 px-3 py-1 text-xs font-medium text-neutral-700"
                                 >{{
                                     contentTypeLabel(generation.content_type)
                                 }}</span
@@ -114,14 +116,14 @@ function deleteGeneration(generation: Generation): void {
                     <div class="flex shrink-0 items-center gap-2">
                         <Link
                             :href="`/generations/${generation.id}`"
-                            class="hover:bg-muted inline-flex h-9 items-center gap-2 rounded-md border px-3 text-sm font-medium"
+                            class="inline-flex h-9 items-center gap-2 rounded-full border border-neutral-300 px-4 text-sm font-medium transition hover:bg-neutral-100"
                         >
                             <FileText class="size-4" />
                             View
                         </Link>
                         <button
                             type="button"
-                            class="text-destructive hover:bg-muted inline-flex size-9 items-center justify-center rounded-md border"
+                            class="inline-flex size-9 items-center justify-center rounded-full border border-neutral-300 text-neutral-600 transition hover:bg-neutral-100 hover:text-black"
                             :aria-label="`Delete generation ${generation.id}`"
                             title="Delete from history"
                             @click="deleteGeneration(generation)"
@@ -135,7 +137,7 @@ function deleteGeneration(generation: Generation): void {
             <nav
                 v-if="generations.last_page > 1"
                 aria-label="Generation history pages"
-                class="flex items-center justify-between border-t pt-4 text-sm"
+                class="flex items-center justify-between border-t border-neutral-200 pt-4 text-sm"
             >
                 <Link
                     v-if="generations.prev_page_url"
@@ -158,7 +160,10 @@ function deleteGeneration(generation: Generation): void {
             </nav>
         </section>
 
-        <section v-else class="rounded-xl border px-6 py-12 text-center">
+        <section
+            v-else
+            class="rounded-2xl border border-neutral-200 bg-white px-6 py-14 text-center shadow-sm"
+        >
             <FileText class="text-muted-foreground mx-auto size-10" />
             <h2 class="mt-4 text-lg font-semibold">No generated content yet</h2>
             <p class="text-muted-foreground mx-auto mt-2 max-w-md text-sm">

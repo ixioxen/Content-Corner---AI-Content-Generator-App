@@ -156,7 +156,7 @@ function submit(): void {
                 <ArrowLeft class="size-4" />
                 All brand profiles
             </Link>
-            <h1 class="mt-5 text-3xl font-semibold tracking-tight">
+            <h1 class="mt-5 text-3xl font-bold tracking-tight">
                 {{ title }}
             </h1>
             <p class="text-muted-foreground mt-2 text-sm">
@@ -166,7 +166,9 @@ function submit(): void {
         </header>
 
         <form class="space-y-7" @submit.prevent="submit">
-            <section class="space-y-5 rounded-xl border p-5">
+            <section
+                class="space-y-5 rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm sm:p-6"
+            >
                 <h2 class="text-lg font-semibold">Brand identity</h2>
 
                 <div class="grid gap-2">
@@ -212,7 +214,7 @@ function submit(): void {
                         maxlength="5000"
                         rows="3"
                         placeholder="Who do you want to reach?"
-                        class="border-input placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/40 w-full rounded-md border bg-transparent px-3 py-2 text-sm shadow-xs outline-none focus-visible:ring-2"
+                        class="placeholder:text-muted-foreground w-full rounded-xl border border-neutral-300 bg-white px-3 py-3 text-sm shadow-xs transition outline-none focus:border-black focus:ring-2 focus:ring-black/10"
                     />
                     <p
                         v-if="form.errors.target_audience"
@@ -230,7 +232,7 @@ function submit(): void {
                         maxlength="5000"
                         rows="3"
                         placeholder="For example: warm, playful, and trustworthy."
-                        class="border-input placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/40 w-full rounded-md border bg-transparent px-3 py-2 text-sm shadow-xs outline-none focus-visible:ring-2"
+                        class="placeholder:text-muted-foreground w-full rounded-xl border border-neutral-300 bg-white px-3 py-3 text-sm shadow-xs transition outline-none focus:border-black focus:ring-2 focus:ring-black/10"
                     />
                     <p
                         v-if="form.errors.personality"
@@ -248,7 +250,7 @@ function submit(): void {
                         maxlength="5000"
                         rows="3"
                         placeholder="Describe the voice, sentence length, and style to use."
-                        class="border-input placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/40 w-full rounded-md border bg-transparent px-3 py-2 text-sm shadow-xs outline-none focus-visible:ring-2"
+                        class="placeholder:text-muted-foreground w-full rounded-xl border border-neutral-300 bg-white px-3 py-3 text-sm shadow-xs transition outline-none focus:border-black focus:ring-2 focus:ring-black/10"
                     />
                     <p
                         v-if="form.errors.writing_style"
@@ -259,7 +261,9 @@ function submit(): void {
                 </div>
             </section>
 
-            <section class="space-y-5 rounded-xl border p-5">
+            <section
+                class="space-y-5 rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm sm:p-6"
+            >
                 <h2 class="text-lg font-semibold">Content preferences</h2>
 
                 <div class="grid gap-2">
@@ -270,7 +274,7 @@ function submit(): void {
                     <select
                         id="language"
                         v-model="languageChoice"
-                        class="border-input bg-background focus-visible:border-ring focus-visible:ring-ring/40 h-10 w-full rounded-md border px-3 text-sm outline-none focus-visible:ring-2"
+                        class="h-11 w-full rounded-xl border border-neutral-300 bg-white px-3 text-sm transition outline-none focus:border-black focus:ring-2 focus:ring-black/10"
                     >
                         <option
                             v-for="language in languages"
@@ -302,7 +306,7 @@ function submit(): void {
                     <select
                         id="main_platform"
                         v-model="form.main_platform"
-                        class="border-input bg-background focus-visible:border-ring focus-visible:ring-ring/40 h-10 w-full rounded-md border px-3 text-sm outline-none focus-visible:ring-2"
+                        class="h-11 w-full rounded-xl border border-neutral-300 bg-white px-3 text-sm transition outline-none focus:border-black focus:ring-2 focus:ring-black/10"
                     >
                         <option value="">Select a platform</option>
                         <option
@@ -327,7 +331,7 @@ function submit(): void {
                     <select
                         id="emoji_usage"
                         v-model="form.emoji_usage"
-                        class="border-input bg-background focus-visible:border-ring focus-visible:ring-ring/40 h-10 w-full rounded-md border px-3 text-sm outline-none focus-visible:ring-2"
+                        class="h-11 w-full rounded-xl border border-neutral-300 bg-white px-3 text-sm transition outline-none focus:border-black focus:ring-2 focus:ring-black/10"
                     >
                         <option value="never">Never</option>
                         <option value="minimal">Minimal</option>
@@ -350,7 +354,7 @@ function submit(): void {
                         maxlength="5000"
                         rows="4"
                         placeholder="List the problems or needs your audience cares about."
-                        class="border-input placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/40 w-full rounded-md border bg-transparent px-3 py-2 text-sm shadow-xs outline-none focus-visible:ring-2"
+                        class="placeholder:text-muted-foreground w-full rounded-xl border border-neutral-300 bg-white px-3 py-3 text-sm shadow-xs transition outline-none focus:border-black focus:ring-2 focus:ring-black/10"
                     />
                     <p
                         v-if="form.errors.pain_points"
@@ -370,7 +374,7 @@ function submit(): void {
                         maxlength="5000"
                         rows="3"
                         placeholder="Anything else content creators should know."
-                        class="border-input placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/40 w-full rounded-md border bg-transparent px-3 py-2 text-sm shadow-xs outline-none focus-visible:ring-2"
+                        class="placeholder:text-muted-foreground w-full rounded-xl border border-neutral-300 bg-white px-3 py-3 text-sm shadow-xs transition outline-none focus:border-black focus:ring-2 focus:ring-black/10"
                     />
                     <p
                         v-if="form.errors.additional_instructions"
@@ -381,7 +385,9 @@ function submit(): void {
                 </div>
             </section>
 
-            <section class="space-y-5 rounded-xl border p-5">
+            <section
+                class="space-y-5 rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm sm:p-6"
+            >
                 <h2 class="text-lg font-semibold">Word preferences</h2>
 
                 <div class="grid gap-2">

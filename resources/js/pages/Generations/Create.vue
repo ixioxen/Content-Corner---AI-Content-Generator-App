@@ -62,10 +62,12 @@ function submit(): void {
     <main class="mx-auto w-full max-w-3xl space-y-8 p-6 lg:p-10">
         <header class="flex flex-wrap items-end justify-between gap-4">
             <div>
-                <p class="text-muted-foreground text-sm font-medium">
+                <p
+                    class="text-muted-foreground text-xs font-semibold tracking-[0.16em] uppercase"
+                >
                     AI writing workspace
                 </p>
-                <h1 class="mt-1 text-3xl font-semibold tracking-tight">
+                <h1 class="mt-2 text-3xl font-bold tracking-tight">
                     Generate content
                 </h1>
                 <p class="text-muted-foreground mt-2 text-sm">
@@ -75,22 +77,24 @@ function submit(): void {
             </div>
             <Link
                 href="/generations"
-                class="inline-flex items-center gap-2 text-sm font-medium underline underline-offset-4"
+                class="inline-flex items-center gap-2 text-sm font-medium underline underline-offset-4 transition hover:text-neutral-500"
             >
                 Generation history
                 <ArrowRight class="size-4" />
             </Link>
         </header>
 
-        <section class="flex items-center justify-between border-y py-4">
+        <section
+            class="flex items-center justify-between rounded-2xl border border-neutral-200 bg-white px-5 py-4 shadow-sm"
+        >
             <span class="text-muted-foreground text-sm">Available credits</span>
-            <strong class="text-lg tabular-nums">{{ creditsBalance }}</strong>
+            <strong class="text-xl tabular-nums">{{ creditsBalance }}</strong>
         </section>
 
         <p
             v-if="!providerConfigured"
             role="alert"
-            class="rounded-md border border-amber-500/40 bg-amber-500/5 px-4 py-3 text-sm"
+            class="rounded-xl border border-neutral-200 bg-white px-4 py-3 text-sm text-neutral-700"
         >
             Gemini is not configured. Add <code>GEMINI_API_KEY</code> to the
             server environment and restart Laravel before generating content.
@@ -98,20 +102,20 @@ function submit(): void {
         <p
             v-if="$page.props.errors.credits"
             role="alert"
-            class="border-destructive/40 text-destructive rounded-md border px-4 py-3 text-sm"
+            class="rounded-xl border border-neutral-300 bg-white px-4 py-3 text-sm text-neutral-800"
         >
             {{ $page.props.errors.credits }}
         </p>
         <p
             v-if="$page.props.errors.generation"
             role="alert"
-            class="border-destructive/40 text-destructive rounded-md border px-4 py-3 text-sm"
+            class="rounded-xl border border-neutral-300 bg-white px-4 py-3 text-sm text-neutral-800"
         >
             {{ $page.props.errors.generation }}
         </p>
 
         <form
-            class="space-y-6 rounded-xl border p-5 sm:p-7"
+            class="space-y-6 rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm sm:p-7"
             @submit.prevent="submit"
         >
             <div class="grid gap-2">
@@ -119,7 +123,7 @@ function submit(): void {
                 <select
                     id="content_type"
                     v-model="form.content_type"
-                    class="border-input bg-background focus-visible:border-ring focus-visible:ring-ring/40 h-10 w-full rounded-md border px-3 text-sm outline-none focus-visible:ring-2"
+                    class="h-11 w-full rounded-xl border border-neutral-300 bg-white px-3 text-sm transition outline-none focus:border-black focus:ring-2 focus:ring-black/10"
                 >
                     <option value="social_post">Social media post</option>
                     <option value="marketing_copy">Marketing copy</option>
@@ -143,7 +147,7 @@ function submit(): void {
                     maxlength="5000"
                     rows="6"
                     placeholder="Describe the topic, audience, key points, offer, and desired call to action."
-                    class="border-input placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/40 w-full rounded-md border bg-transparent px-3 py-2 text-sm shadow-xs outline-none focus-visible:ring-2"
+                    class="placeholder:text-muted-foreground w-full rounded-xl border border-neutral-300 bg-white px-3 py-3 text-sm shadow-xs transition outline-none focus:border-black focus:ring-2 focus:ring-black/10"
                 />
                 <p class="text-muted-foreground text-xs">
                     Do not include passwords, API keys, or other sensitive
@@ -164,7 +168,7 @@ function submit(): void {
                 <select
                     id="brand_profile_id"
                     v-model="form.brand_profile_id"
-                    class="border-input bg-background focus-visible:border-ring focus-visible:ring-ring/40 h-10 w-full rounded-md border px-3 text-sm outline-none focus-visible:ring-2"
+                    class="h-11 w-full rounded-xl border border-neutral-300 bg-white px-3 text-sm transition outline-none focus:border-black focus:ring-2 focus:ring-black/10"
                 >
                     <option value="">No brand profile</option>
                     <option
@@ -208,7 +212,7 @@ function submit(): void {
                 <select
                     id="custom_tone_id"
                     v-model="form.custom_tone_id"
-                    class="border-input bg-background focus-visible:border-ring focus-visible:ring-ring/40 h-10 w-full rounded-md border px-3 text-sm outline-none focus-visible:ring-2"
+                    class="h-11 w-full rounded-xl border border-neutral-300 bg-white px-3 text-sm transition outline-none focus:border-black focus:ring-2 focus:ring-black/10"
                 >
                     <option value="">Default AI voice</option>
                     <option

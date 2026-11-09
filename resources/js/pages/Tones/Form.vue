@@ -46,31 +46,74 @@ function submit(): void {
     <Head :title="title" />
     <main class="mx-auto w-full max-w-3xl space-y-8 p-6 lg:p-10">
         <header>
-            <Link href="/tones" class="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
+            <Link
+                href="/tones"
+                class="text-muted-foreground hover:text-foreground inline-flex items-center gap-2 text-sm"
+            >
                 <ArrowLeft class="size-4" />
                 All tones
             </Link>
-            <h1 class="mt-5 text-3xl font-semibold tracking-tight">{{ title }}</h1>
-            <p class="mt-2 text-sm text-muted-foreground">Describe the voice and include a short example to make it recognizable.</p>
+            <h1 class="mt-5 text-3xl font-bold tracking-tight">{{ title }}</h1>
+            <p class="text-muted-foreground mt-2 text-sm">
+                Describe the voice and include a short example to make it
+                recognizable.
+            </p>
         </header>
 
-        <form class="space-y-6" @submit.prevent="submit">
+        <form
+            class="space-y-6 rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm sm:p-7"
+            @submit.prevent="submit"
+        >
             <div class="grid gap-2">
                 <Label for="name">Name</Label>
-                <Input id="name" v-model="form.name" maxlength="100" required placeholder="Friendly and clear" />
-                <p v-if="form.errors.name" class="text-sm text-destructive">{{ form.errors.name }}</p>
+                <Input
+                    id="name"
+                    v-model="form.name"
+                    maxlength="100"
+                    required
+                    placeholder="Friendly and clear"
+                />
+                <p v-if="form.errors.name" class="text-destructive text-sm">
+                    {{ form.errors.name }}
+                </p>
             </div>
 
             <div class="grid gap-2">
                 <Label for="description">Description</Label>
-                <textarea id="description" v-model="form.description" required maxlength="5000" rows="4" placeholder="Describe the voice, audience, and writing habits." class="w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-xs outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/40" />
-                <p v-if="form.errors.description" class="text-sm text-destructive">{{ form.errors.description }}</p>
+                <textarea
+                    id="description"
+                    v-model="form.description"
+                    required
+                    maxlength="5000"
+                    rows="4"
+                    placeholder="Describe the voice, audience, and writing habits."
+                    class="placeholder:text-muted-foreground w-full rounded-xl border border-neutral-300 bg-white px-3 py-3 text-sm shadow-xs transition outline-none focus:border-black focus:ring-2 focus:ring-black/10"
+                />
+                <p
+                    v-if="form.errors.description"
+                    class="text-destructive text-sm"
+                >
+                    {{ form.errors.description }}
+                </p>
             </div>
 
             <div class="grid gap-2">
                 <Label for="sample_content">Sample content</Label>
-                <textarea id="sample_content" v-model="form.sample_content" required maxlength="10000" rows="7" placeholder="Paste a short example that represents this tone." class="w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-xs outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/40" />
-                <p v-if="form.errors.sample_content" class="text-sm text-destructive">{{ form.errors.sample_content }}</p>
+                <textarea
+                    id="sample_content"
+                    v-model="form.sample_content"
+                    required
+                    maxlength="10000"
+                    rows="7"
+                    placeholder="Paste a short example that represents this tone."
+                    class="placeholder:text-muted-foreground w-full rounded-xl border border-neutral-300 bg-white px-3 py-3 text-sm shadow-xs transition outline-none focus:border-black focus:ring-2 focus:ring-black/10"
+                />
+                <p
+                    v-if="form.errors.sample_content"
+                    class="text-destructive text-sm"
+                >
+                    {{ form.errors.sample_content }}
+                </p>
             </div>
 
             <div class="flex flex-wrap items-center gap-3 border-t pt-5">
@@ -78,7 +121,11 @@ function submit(): void {
                     <Save class="mr-2 size-4" />
                     {{ form.processing ? 'Saving...' : 'Save tone' }}
                 </Button>
-                <Link href="/tones" class="text-sm text-muted-foreground hover:text-foreground">Cancel</Link>
+                <Link
+                    href="/tones"
+                    class="text-muted-foreground hover:text-foreground text-sm"
+                    >Cancel</Link
+                >
             </div>
         </form>
     </main>

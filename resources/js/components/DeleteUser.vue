@@ -29,11 +29,11 @@ const passwordInput = useTemplateRef('passwordInput');
             description="Delete your account and all of its resources"
         />
         <div
-            class="space-y-4 rounded-lg border border-red-100 bg-red-50 p-4 dark:border-red-200/10 dark:bg-red-700/10"
+            class="space-y-4 rounded-2xl border border-neutral-200 bg-neutral-50 p-5"
         >
-            <div class="relative space-y-0.5 text-red-600 dark:text-red-100">
-                <p class="font-medium">Warning</p>
-                <p class="text-sm">
+            <div class="relative space-y-0.5 text-neutral-800">
+                <p class="font-semibold">Warning</p>
+                <p class="text-sm text-neutral-600">
                     Please proceed with caution, this cannot be undone.
                 </p>
             </div>

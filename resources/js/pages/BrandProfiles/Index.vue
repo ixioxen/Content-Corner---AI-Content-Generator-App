@@ -68,10 +68,12 @@ function confirmDelete(): void {
     <main class="mx-auto w-full max-w-6xl space-y-8 p-6 lg:p-10">
         <header class="flex flex-wrap items-end justify-between gap-4">
             <div>
-                <p class="text-muted-foreground text-sm font-medium">
+                <p
+                    class="text-muted-foreground text-xs font-semibold tracking-[0.16em] uppercase"
+                >
                     Reusable brand identity
                 </p>
-                <h1 class="mt-1 text-3xl font-semibold tracking-tight">
+                <h1 class="mt-2 text-3xl font-bold tracking-tight">
                     Brand profiles
                 </h1>
                 <p class="text-muted-foreground mt-2 max-w-xl text-sm">
@@ -82,7 +84,7 @@ function confirmDelete(): void {
             <Link
                 v-if="canCreate"
                 href="/brands/create"
-                class="bg-primary text-primary-foreground inline-flex h-10 items-center gap-2 rounded-md px-4 text-sm font-medium hover:opacity-90"
+                class="inline-flex h-11 items-center gap-2 rounded-full bg-black px-5 text-sm font-semibold text-white transition hover:bg-neutral-800"
             >
                 <Plus class="size-4" />
                 New brand profile
@@ -92,7 +94,7 @@ function confirmDelete(): void {
         <p
             v-if="$page.props.errors.limit"
             role="alert"
-            class="border-destructive/40 text-destructive rounded-md border px-4 py-3 text-sm"
+            class="rounded-xl border border-neutral-300 bg-white px-4 py-3 text-sm text-neutral-800"
         >
             {{ $page.props.errors.limit }}
         </p>
@@ -105,12 +107,12 @@ function confirmDelete(): void {
             <article
                 v-for="profile in profiles"
                 :key="profile.id"
-                class="min-w-0 rounded-xl border p-5"
+                class="min-w-0 rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm transition hover:border-neutral-300"
             >
                 <div class="flex items-start justify-between gap-3">
                     <div class="flex min-w-0 items-start gap-3">
                         <span
-                            class="bg-muted flex size-10 shrink-0 items-center justify-center rounded-lg"
+                            class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-neutral-100 text-neutral-700"
                         >
                             <Building2 class="size-5" />
                         </span>
@@ -128,7 +130,7 @@ function confirmDelete(): void {
                     <div class="flex shrink-0 items-center gap-2">
                         <Link
                             :href="`/brands/${profile.id}/edit`"
-                            class="hover:bg-muted inline-flex size-9 items-center justify-center rounded-md border"
+                            class="inline-flex size-9 items-center justify-center rounded-full border border-neutral-300 transition hover:bg-neutral-100"
                             :aria-label="`Edit ${profile.brand_name}`"
                             :title="`Edit ${profile.brand_name}`"
                         >
@@ -136,7 +138,7 @@ function confirmDelete(): void {
                         </Link>
                         <button
                             type="button"
-                            class="text-destructive hover:bg-muted inline-flex size-9 items-center justify-center rounded-md border"
+                            class="inline-flex size-9 items-center justify-center rounded-full border border-neutral-300 text-neutral-600 transition hover:bg-neutral-100 hover:text-black"
                             :aria-label="`Delete ${profile.brand_name}`"
                             :title="`Delete ${profile.brand_name}`"
                             @click="deleteProfile(profile)"
@@ -189,7 +191,10 @@ function confirmDelete(): void {
             </article>
         </section>
 
-        <section v-else class="rounded-xl border px-6 py-12 text-center">
+        <section
+            v-else
+            class="rounded-2xl border border-neutral-200 bg-white px-6 py-14 text-center shadow-sm"
+        >
             <Building2 class="text-muted-foreground mx-auto size-10" />
             <h2 class="mt-4 text-lg font-semibold">No brand profiles yet</h2>
             <p class="text-muted-foreground mx-auto mt-2 max-w-md text-sm">

@@ -51,83 +51,198 @@ function formatDate(date: string): string {
 
 <template>
     <Head title="Admin overview" />
-    <main class="mx-auto w-full max-w-7xl space-y-8 p-6 lg:p-10">
+    <main class="admin-page mx-auto w-full max-w-7xl space-y-8 p-6 lg:p-10">
         <header class="flex flex-wrap items-end justify-between gap-4">
             <div>
-                <p class="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+                <p
+                    class="text-muted-foreground flex items-center gap-2 text-sm font-medium"
+                >
                     <ShieldCheck class="size-4" />
                     Operations
                 </p>
-                <h1 class="mt-1 text-3xl font-semibold tracking-tight">Admin overview</h1>
-                <p class="mt-2 text-sm text-muted-foreground">Account status, credit usage, and recent administrative activity.</p>
+                <h1 class="mt-1 text-3xl font-semibold tracking-tight">
+                    Admin overview
+                </h1>
+                <p class="text-muted-foreground mt-2 text-sm">
+                    Account status, credit usage, and recent administrative
+                    activity.
+                </p>
             </div>
             <div class="flex flex-wrap gap-3">
-                <Link href="/admin/users" class="inline-flex h-10 items-center gap-2 rounded-md border px-4 text-sm font-medium hover:bg-muted">
+                <Link
+                    href="/admin/users"
+                    class="inline-flex h-10 items-center gap-2 rounded-full border border-black/15 bg-white px-4 text-sm font-medium transition hover:bg-black hover:text-white focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 focus-visible:outline-none"
+                >
                     Manage users <ArrowRight class="size-4" />
                 </Link>
-                <Link href="/admin/audit-logs" class="inline-flex h-10 items-center gap-2 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground hover:opacity-90">
+                <Link
+                    href="/admin/audit-logs"
+                    class="inline-flex h-10 items-center gap-2 rounded-full bg-black px-4 text-sm font-medium text-white transition hover:bg-neutral-800 focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 focus-visible:outline-none"
+                >
                     Audit logs <ArrowRight class="size-4" />
                 </Link>
             </div>
         </header>
 
-        <section class="grid gap-5 border-y py-6 sm:grid-cols-2 xl:grid-cols-3">
-            <div>
-                <p class="text-sm text-muted-foreground">User accounts</p>
-                <p class="mt-2 text-3xl font-semibold tabular-nums">{{ metrics.users }}</p>
-                <p class="mt-1 text-sm text-muted-foreground">{{ metrics.activeUsers }} active · {{ metrics.suspendedUsers }} suspended</p>
-            </div>
-            <div>
-                <p class="text-sm text-muted-foreground">Credits in circulation</p>
-                <p class="mt-2 text-3xl font-semibold tabular-nums">{{ metrics.creditsInCirculation }}</p>
-                <p class="mt-1 text-sm text-muted-foreground">Across all accounts</p>
-            </div>
-            <div>
-                <p class="text-sm text-muted-foreground">Generation usage</p>
-                <p class="mt-2 text-3xl font-semibold tabular-nums">{{ metrics.generations }}</p>
-                <p class="mt-1 text-sm text-muted-foreground">{{ metrics.creditsUsed }} credits consumed</p>
-            </div>
+        <section
+            class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3"
+            aria-label="Administration metrics"
+        >
+            <article class="metric-card rounded-2xl border p-5 sm:p-6">
+                <p
+                    class="text-xs font-semibold tracking-[0.14em] text-black/50 uppercase"
+                >
+                    User accounts
+                </p>
+                <p
+                    class="mt-3 text-3xl font-semibold tracking-tight tabular-nums"
+                >
+                    {{ metrics.users }}
+                </p>
+                <p class="mt-2 text-sm text-black/55">
+                    {{ metrics.activeUsers }} active ·
+                    {{ metrics.suspendedUsers }} suspended
+                </p>
+            </article>
+            <article class="metric-card rounded-2xl border p-5 sm:p-6">
+                <p
+                    class="text-xs font-semibold tracking-[0.14em] text-black/50 uppercase"
+                >
+                    Credits in circulation
+                </p>
+                <p
+                    class="mt-3 text-3xl font-semibold tracking-tight tabular-nums"
+                >
+                    {{ metrics.creditsInCirculation }}
+                </p>
+                <p class="mt-2 text-sm text-black/55">Across all accounts</p>
+            </article>
+            <article class="metric-card rounded-2xl border p-5 sm:p-6">
+                <p
+                    class="text-xs font-semibold tracking-[0.14em] text-black/50 uppercase"
+                >
+                    Generation usage
+                </p>
+                <p
+                    class="mt-3 text-3xl font-semibold tracking-tight tabular-nums"
+                >
+                    {{ metrics.generations }}
+                </p>
+                <p class="mt-2 text-sm text-black/55">
+                    {{ metrics.creditsUsed }} credits consumed
+                </p>
+            </article>
         </section>
 
-        <section class="grid gap-10 xl:grid-cols-2">
-            <div>
+        <section class="grid gap-5 xl:grid-cols-2">
+            <article class="activity-card rounded-2xl border p-5 sm:p-6">
                 <div class="mb-4 flex items-end justify-between gap-4">
                     <div>
-                        <h2 class="text-xl font-semibold">Recent credit activity</h2>
-                        <p class="mt-1 text-sm text-muted-foreground">Latest ledger entries across all accounts.</p>
+                        <h2 class="text-xl font-semibold">
+                            Recent credit activity
+                        </h2>
+                        <p class="mt-1 text-sm text-black/55">
+                            Latest ledger entries across all accounts.
+                        </p>
                     </div>
-                    <Link href="/admin/transactions" class="text-sm font-medium underline underline-offset-4">All transactions</Link>
+                    <Link
+                        href="/admin/transactions"
+                        class="shrink-0 text-sm font-semibold underline decoration-black/30 underline-offset-4 transition hover:decoration-black focus-visible:ring-2 focus-visible:ring-black focus-visible:outline-none"
+                        >All transactions</Link
+                    >
                 </div>
-                <div v-if="recentTransactions.length" class="divide-y border-y">
-                    <article v-for="transaction in recentTransactions" :key="transaction.id" class="flex flex-wrap items-center justify-between gap-3 py-4">
+                <div
+                    v-if="recentTransactions.length"
+                    class="divide-y divide-black/10"
+                >
+                    <article
+                        v-for="transaction in recentTransactions"
+                        :key="transaction.id"
+                        class="flex flex-wrap items-center justify-between gap-3 py-4 first:pt-0 last:pb-0"
+                    >
                         <div class="min-w-0">
-                            <p class="font-medium">{{ transaction.description || transaction.type.replaceAll('_', ' ') }}</p>
-                            <p class="mt-1 truncate text-sm text-muted-foreground">{{ transaction.user.name }} · {{ formatDate(transaction.created_at) }}</p>
+                            <p class="font-medium">
+                                {{
+                                    transaction.description ||
+                                    transaction.type.replaceAll('_', ' ')
+                                }}
+                            </p>
+                            <p class="mt-1 truncate text-sm text-black/55">
+                                {{ transaction.user.name }} ·
+                                {{ formatDate(transaction.created_at) }}
+                            </p>
                         </div>
-                        <p class="font-semibold tabular-nums" :class="transaction.amount > 0 ? 'text-emerald-700 dark:text-emerald-400' : ''">
-                            {{ transaction.amount > 0 ? '+' : '' }}{{ transaction.amount }}
+                        <p class="font-semibold tabular-nums">
+                            {{ transaction.amount > 0 ? '+' : ''
+                            }}{{ transaction.amount }}
                         </p>
                     </article>
                 </div>
-                <p v-else class="border-y py-8 text-sm text-muted-foreground">No credit activity yet.</p>
-            </div>
+                <p
+                    v-else
+                    class="rounded-xl border border-dashed border-black/15 px-4 py-8 text-center text-sm text-black/55"
+                >
+                    No credit activity yet.
+                </p>
+            </article>
 
-            <div>
+            <article class="activity-card rounded-2xl border p-5 sm:p-6">
                 <div class="mb-4 flex items-end justify-between gap-4">
                     <div>
-                        <h2 class="text-xl font-semibold">Administrative activity</h2>
-                        <p class="mt-1 text-sm text-muted-foreground">Recent account and credit actions.</p>
+                        <h2 class="text-xl font-semibold">
+                            Administrative activity
+                        </h2>
+                        <p class="mt-1 text-sm text-black/55">
+                            Recent account and credit actions.
+                        </p>
                     </div>
-                    <Link href="/admin/audit-logs" class="text-sm font-medium underline underline-offset-4">Full audit trail</Link>
+                    <Link
+                        href="/admin/audit-logs"
+                        class="shrink-0 text-sm font-semibold underline decoration-black/30 underline-offset-4 transition hover:decoration-black focus-visible:ring-2 focus-visible:ring-black focus-visible:outline-none"
+                        >Full audit trail</Link
+                    >
                 </div>
-                <div v-if="recentAuditLogs.length" class="divide-y border-y">
-                    <article v-for="entry in recentAuditLogs" :key="entry.id" class="py-4">
-                        <p class="font-medium">{{ entry.action.replaceAll('.', ' ') }}</p>
-                        <p class="mt-1 text-sm text-muted-foreground">{{ entry.admin.name }} · {{ entry.target_type.split('\\').pop() }} #{{ entry.target_id }} · {{ formatDate(entry.created_at) }}</p>
+                <div
+                    v-if="recentAuditLogs.length"
+                    class="divide-y divide-black/10"
+                >
+                    <article
+                        v-for="entry in recentAuditLogs"
+                        :key="entry.id"
+                        class="py-4 first:pt-0 last:pb-0"
+                    >
+                        <p class="font-medium">
+                            {{ entry.action.replaceAll('.', ' ') }}
+                        </p>
+                        <p class="mt-1 text-sm text-black/55">
+                            {{ entry.admin.name }} ·
+                            {{ entry.target_type.split('\\').pop() }} #{{
+                                entry.target_id
+                            }}
+                            · {{ formatDate(entry.created_at) }}
+                        </p>
                     </article>
                 </div>
-                <p v-else class="border-y py-8 text-sm text-muted-foreground">No administrative actions recorded yet.</p>
-            </div>
+                <p
+                    v-else
+                    class="rounded-xl border border-dashed border-black/15 px-4 py-8 text-center text-sm text-black/55"
+                >
+                    No administrative actions recorded yet.
+                </p>
+            </article>
         </section>
     </main>
 </template>
+
+<style scoped>
+.admin-page {
+    color: #000;
+    background: #fafafa;
+}
+
+.metric-card,
+.activity-card {
+    border-color: #e5e5e5;
+    background: #fff;
+}
+</style>

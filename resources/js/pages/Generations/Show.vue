@@ -72,35 +72,35 @@ function deleteGeneration(): void {
             <div>
                 <Link
                     href="/generations"
-                    class="text-muted-foreground hover:text-foreground inline-flex items-center gap-2 text-sm"
+                    class="text-muted-foreground hover:text-foreground inline-flex items-center gap-2 text-sm transition"
                 >
                     <ArrowLeft class="size-4" />
                     Generation history
                 </Link>
                 <div class="mt-4 flex flex-wrap items-center gap-2">
                     <span
-                        class="bg-muted rounded-md px-2 py-1 text-xs font-medium"
+                        class="rounded-full bg-neutral-100 px-3 py-1 text-xs font-medium text-neutral-700"
                         >{{ contentTypeLabel(generation.content_type) }}</span
                     >
                     <time class="text-muted-foreground text-xs">{{
                         formatDate(generation.created_at)
                     }}</time>
                 </div>
-                <h1 class="mt-2 text-3xl font-semibold tracking-tight">
+                <h1 class="mt-2 text-3xl font-bold tracking-tight">
                     Generated content
                 </h1>
             </div>
             <div class="flex items-center gap-2">
                 <Link
                     href="/generate"
-                    class="hover:bg-muted inline-flex h-9 items-center gap-2 rounded-md border px-3 text-sm font-medium"
+                    class="inline-flex h-10 items-center gap-2 rounded-full border border-neutral-300 bg-white px-4 text-sm font-medium transition hover:bg-neutral-100"
                 >
                     <Sparkles class="size-4" />
                     New
                 </Link>
                 <button
                     type="button"
-                    class="text-destructive hover:bg-muted inline-flex size-9 items-center justify-center rounded-md border"
+                    class="inline-flex size-10 items-center justify-center rounded-full border border-neutral-300 bg-white text-neutral-600 transition hover:bg-neutral-100 hover:text-black"
                     aria-label="Delete from history"
                     title="Delete from history"
                     @click="deleteGeneration"
@@ -110,7 +110,9 @@ function deleteGeneration(): void {
             </div>
         </header>
 
-        <section class="space-y-6 rounded-xl border p-5 sm:p-7">
+        <section
+            class="space-y-6 rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm sm:p-7"
+        >
             <div>
                 <h2 class="text-sm font-semibold">Your brief</h2>
                 <p
@@ -158,7 +160,7 @@ function deleteGeneration(): void {
                     {{ copyError }}
                 </p>
                 <div
-                    class="bg-muted/40 mt-4 rounded-lg p-4 text-sm leading-7 whitespace-pre-wrap sm:p-6"
+                    class="mt-4 rounded-xl bg-neutral-50 p-4 text-sm leading-7 whitespace-pre-wrap sm:p-6"
                 >
                     {{ generation.generated_text }}
                 </div>
