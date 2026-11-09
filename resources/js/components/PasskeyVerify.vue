@@ -59,12 +59,12 @@ const { verify, isLoading, error, isSupported } = usePasskeyVerify({
             </div>
         </div>
 
-        <div class="relative my-6">
-            <div class="absolute inset-0 flex items-center">
-                <Separator class="w-full" />
+        <div class="border px-2 py-1 flex gap-2 justify-center rounded-md my-6">
+            <div class="">
+                <img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/3840px-Google_%22G%22_logo.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail" alt="google logo" class="h-6 w-6" />
             </div>
-            <div class="relative flex justify-center text-xs uppercase">
-                <span class="bg-background text-muted-foreground px-2">
+            <div class="">
+                <span class="">
                     {{ props.separator ?? 'Or continue with email' }}
                 </span>
             </div>
