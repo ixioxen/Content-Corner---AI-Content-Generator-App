@@ -1,6 +1,17 @@
 <script setup lang="ts">
 import { Head, Link, router } from '@inertiajs/vue3';
 import { FileText, Sparkles, Trash2 } from '@lucide/vue';
+import { ref } from 'vue';
+import { Button } from '@/components/ui/button';
+import {
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog';
 
 type Generation = {
     id: number;
@@ -20,6 +31,9 @@ type Pagination = {
 };
 
 defineProps<{ generations: Pagination }>();
+
+const generationToDelete = ref<Generation | null>(null);
+const isDeleteDialogOpen = ref(false);
 
 defineOptions({
     layout: {
@@ -45,9 +59,21 @@ function formatDate(date: string): string {
 }
 
 function deleteGeneration(generation: Generation): void {
-    if (window.confirm('Delete this generated content from your history?')) {
-        router.delete(`/generations/${generation.id}`);
+    generationToDelete.value = generation;
+    isDeleteDialogOpen.value = true;
+}
+
+function confirmDelete(): void {
+    if (!generationToDelete.value) {
+        return;
     }
+
+    router.delete(`/generations/${generationToDelete.value.id}`, {
+        onFinish: () => {
+            isDeleteDialogOpen.value = false;
+            generationToDelete.value = null;
+        },
+    });
 }
 </script>
 
@@ -177,5 +203,25 @@ function deleteGeneration(generation: Generation): void {
                 Generate your first content
             </Link>
         </section>
+
+        <Dialog v-model:open="isDeleteDialogOpen">
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>Delete generated content?</DialogTitle>
+                    <DialogDescription>
+                        This will permanently remove this item from your
+                        generation history. This action cannot be undone.
+                    </DialogDescription>
+                </DialogHeader>
+                <DialogFooter>
+                    <DialogClose as-child>
+                        <Button variant="outline">Cancel</Button>
+                    </DialogClose>
+                    <Button variant="destructive" @click="confirmDelete">
+                        Delete from history
+                    </Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
     </main>
 </template>
