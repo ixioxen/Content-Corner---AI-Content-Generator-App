@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use Database\Factories\UserFactory;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -35,13 +35,13 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
  */
 #[Fillable(['name', 'email', 'password'])]
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
-class User extends Authenticatable implements PasskeyUser
+class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable, PasskeyAuthenticatable, TwoFactorAuthenticatable;
 
     /**
-     * Get the attributes that should be cast.
+     * Convert database values into the PHP types used by the app.
      *
      * @return array<string, string>
      */
@@ -58,6 +58,8 @@ class User extends Authenticatable implements PasskeyUser
     }
 
     /**
+     * Get this user's credit transactions.
+     *
      * @return HasMany<CreditTransaction, $this>
      */
     public function creditTransactions(): HasMany
@@ -66,6 +68,8 @@ class User extends Authenticatable implements PasskeyUser
     }
 
     /**
+     * Get this user's credit purchases.
+     *
      * @return HasMany<CreditPurchase, $this>
      */
     public function creditPurchases(): HasMany
@@ -74,6 +78,8 @@ class User extends Authenticatable implements PasskeyUser
     }
 
     /**
+     * Get this user's custom tones.
+     *
      * @return HasMany<CustomTone, $this>
      */
     public function customTones(): HasMany
@@ -82,6 +88,8 @@ class User extends Authenticatable implements PasskeyUser
     }
 
     /**
+     * Get this user's custom tone undo actions.
+     *
      * @return HasMany<CustomToneUndoAction, $this>
      */
     public function customToneUndoActions(): HasMany
@@ -90,6 +98,8 @@ class User extends Authenticatable implements PasskeyUser
     }
 
     /**
+     * Get this user's brand profiles.
+     *
      * @return HasMany<BrandProfile, $this>
      */
     public function brandProfiles(): HasMany
@@ -98,6 +108,8 @@ class User extends Authenticatable implements PasskeyUser
     }
 
     /**
+     * Get this user's brand profile undo actions.
+     *
      * @return HasMany<BrandProfileUndoAction, $this>
      */
     public function brandProfileUndoActions(): HasMany
@@ -106,6 +118,8 @@ class User extends Authenticatable implements PasskeyUser
     }
 
     /**
+     * Get this user's generated content.
+     *
      * @return HasMany<GeneratedContent, $this>
      */
     public function generatedContents(): HasMany
@@ -113,16 +127,25 @@ class User extends Authenticatable implements PasskeyUser
         return $this->hasMany(GeneratedContent::class);
     }
 
+    /**
+     * Check whether this user is an administrator.
+     */
     public function isAdmin(): bool
     {
         return $this->role === UserRole::Admin;
     }
 
+    /**
+     * Check whether this user's account is active.
+     */
     public function isActive(): bool
     {
         return $this->status === UserStatus::Active;
     }
 
+    /**
+     * Check whether this user's account is suspended.
+     */
     public function isSuspended(): bool
     {
         return $this->status === UserStatus::Suspended;
