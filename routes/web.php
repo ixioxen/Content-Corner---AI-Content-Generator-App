@@ -12,6 +12,7 @@ use App\Http\Controllers\CustomToneController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GeneratedContentController;
 use App\Http\Controllers\LandingPageController;
+use App\Http\Controllers\ScriptGenerationController;
 use App\Http\Controllers\StripeCheckoutController;
 use App\Http\Controllers\StripeWebhookController;
 use App\Http\Controllers\VerifyCreditPurchaseController;
@@ -40,6 +41,25 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('brands', BrandProfileController::class)->except('show');
     Route::post('tones/undo/{token}', [CustomToneController::class, 'undo'])->name('tones.undo');
     Route::resource('tones', CustomToneController::class)->except('show');
+
+    // -------------------------------------------------------
+    // Script Generator routes
+    // -------------------------------------------------------
+    // GET  /scripts          → index()      list all scripts (history)
+    // GET  /scripts/create   → create()     show the generator form
+    // POST /scripts          → store()      submit form & generate
+    // GET  /scripts/{script} → show()       view a generated script
+    // POST /scripts/{script}/regenerate → regenerate() generate again
+    // -------------------------------------------------------
+    Route::get('scripts', [ScriptGenerationController::class, 'index'])->name('scripts.index');
+    Route::get('scripts/create', [ScriptGenerationController::class, 'create'])->name('scripts.create');
+    Route::post('scripts', [ScriptGenerationController::class, 'store'])
+        ->middleware('throttle:10,1')
+        ->name('scripts.store');
+    Route::get('scripts/{script}', [ScriptGenerationController::class, 'show'])->name('scripts.show');
+    Route::post('scripts/{script}/regenerate', [ScriptGenerationController::class, 'regenerate'])
+        ->middleware('throttle:10,1')
+        ->name('scripts.regenerate');
 
     Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
         Route::get('/', AdminDashboardController::class)->name('overview');

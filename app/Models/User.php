@@ -128,6 +128,16 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
     }
 
     /**
+     * Get this user's generated scripts.
+     *
+     * @return HasMany<ScriptGenerate, $this>
+     */
+    public function scriptGenerates(): HasMany
+    {
+        return $this->hasMany(ScriptGenerate::class);
+    }
+
+    /**
      * Check whether this user is an administrator.
      */
     public function isAdmin(): bool

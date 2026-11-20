@@ -2,6 +2,7 @@
 import { Link, usePage } from '@inertiajs/vue3';
 import {
     Building2,
+    Clapperboard,
     CreditCard,
     FileClock,
     History,
@@ -51,6 +52,11 @@ const mainNavItems = computed<NavItem[]>(() => [
         title: 'Generate content',
         href: '/generate',
         icon: Sparkles,
+    },
+    {
+        title: 'Script generator',
+        href: '/scripts/create',
+        icon: Clapperboard,
     },
     {
         title: 'Generation history',

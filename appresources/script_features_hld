@@ -1,0 +1,231 @@
+AI Content Generator
+
+Script Generator — HLD Document
+
+Version: 1.0
+Frontend: Vue.js, Inertia.js, Tailwind CSS
+Backend: Laravel
+Database: MySQL
+AI Integration: Existing AI Service
+
+---
+
+1. Overview
+
+1.1 Purpose
+
+Enable users to generate customized, structured scripts based on their target audience, product information, and content objectives.
+
+1.2 MVP Scope
+
+In Scope
+
+- Script Input Configuration
+- Brand Profile Integration
+- AI Script Generation
+- Structured Script Output
+- Edit, Copy, Regenerate
+- Credit Management
+- Generation History Integration
+
+Out of Scope
+
+- AI Video / Voice Generation
+- Automatic Video Editing
+- Social Media Publishing
+- Video Analytics
+
+2. Feature Structure
+
+Module| Responsibility
+Script Input| Collect generation information
+Brand Profile| Reuse saved brand information
+Script Configuration| Set objective, platform, tone, language, duration
+AI Generation| Generate scripts using AI
+Script Output| Display and manage generated scripts
+Credit Management| Check and deduct credits
+Script Storage| Save inputs and outputs
+Generation History| Display Content and Script records together
+
+2.1 Input Requirements
+
+Input| Required
+Target Audience| Yes
+Audience Pain Points| No
+Product / Service Name| Yes
+Product Description| Yes
+Product Benefits| No
+Content Objective| Yes
+Platform| Yes
+Tone| Yes
+Language| Yes
+Duration| Yes
+Additional Instructions| No
+
+Brand Profile: Optionally prefill Brand Name, Target Audience, Brand Voice, and Product Information.
+
+2.2 Configuration Options
+
+Objectives: Product Promotion, Product Selling, Education, Brand Awareness, Storytelling, Audience Engagement.
+
+Platforms: TikTok, Facebook Reels, YouTube Shorts.
+
+Tones: Professional, Friendly, Casual, Persuasive, Educational, Funny, Storytelling, Custom Tone.
+
+Languages: English, Burmese.
+
+Duration: 15, 30, 60, 90, 120 seconds.
+
+2.3 Output Structure
+
+- Script Title
+- Hook
+- Main Content
+- Call to Action (CTA)
+- Estimated Duration
+- Language
+
+Actions: Edit, Copy, Regenerate.
+
+3. User Flow
+
+1. Open Script Generator.
+2. Select Brand Profile (Optional).
+3. Enter script information.
+4. Select objective, platform, tone, language, and duration.
+5. Submit generation request.
+6. Backend validates inputs and checks credits.
+7. AI generates the script.
+8. Backend validates and saves the result.
+9. Deduct one credit after successful generation.
+10. Display the generated script.
+
+4. Functional Requirements
+
+- Users can configure script inputs.
+- Users can optionally use Brand Profiles and Custom Tones.
+- System generates structured scripts through AI.
+- Users can edit and copy generated scripts.
+- Users can regenerate scripts.
+- Every successful generation costs one credit.
+- Failed generation costs zero credits.
+- Users can access only their own scripts.
+
+5. UI/UX Structure
+
+Script Generator Page
+
+- Input Section
+- Configuration Section
+- Generate Button
+- Output Section
+- Loading, Success, and Error States
+
+Existing Generation History Page
+
+Categories:
+
+- All
+- Content
+- Script
+
+Display title, category, preview, and creation date.
+
+Content and Script records will be stored separately but displayed together in the existing History interface.
+
+6. System Architecture
+
+Component| Responsibility
+ScriptController| Handle requests
+ScriptService| Script business logic
+ScriptPromptBuilder| Build AI prompts
+AIService| Communicate with AI Provider
+ScriptResponseParser| Validate AI output
+CreditService| Manage credits
+GenerationHistoryService| Combine History records
+
+Reuse existing AI and Credit services where possible. Keep Content and Script prompt logic separate.
+
+7. Database Design
+
+Existing Tables
+
+- users
+- generated_contents
+- credit_transactions
+- brand_profiles
+- custom_tones
+
+--------------------------------------------------------------------------------------
+
+New Table: generated_scripts
+
+Column| Type
+id| BIGINT
+user_id| BIGINT
+brand_profile_id| BIGINT NULL
+custom_tone_id| BIGINT NULL
+request_uuid| CHAR(36)
+title| VARCHAR(255)
+input_data| JSON
+output_data| JSON
+status| VARCHAR(20)
+created_at| TIMESTAMP
+updated_at| TIMESTAMP
+
+Relationships: GeneratedScript belongs to User, BrandProfile, and CustomTone.
+Note: Verify existing schemas and foreign keys before creating migrations.
+
+--------------------------------------------------------------------------------------
+
+8. Credit & Business Logic
+
+Action| Credit Cost
+Generate| 1
+Regenerate| 1
+Edit / Copy / History| Free
+Failed Generation| 0
+
+- Check balance before generation.
+- Deduct only after successful generation.
+- Save script and credit transaction consistently.
+- Prevent duplicate requests and double deductions.
+- Regeneration creates a new record without overwriting the original.
+
+9. Security & Error Handling
+
+- Protect routes with authentication middleware.
+- Enforce user ownership on the backend.
+- Validate inputs using Laravel Form Requests.
+- Keep API keys in server-side environment variables.
+- Apply rate limiting and duplicate request protection.
+- Handle AI errors, timeouts, invalid responses, and database failures.
+- Do not deduct credits for failed generation.
+
+10. Implementation Phases
+
+Phase| Tasks| Completion Criteria
+0. System Review| Inspect existing tables, AI, Credit, and History services| Reuse points identified
+1. Database| Migration, Model, Relationships, JSON casts| Database works
+2. Backend Core| Validation, Prompt Builder, AI integration, Response Parser| Structured script generated
+3. Credit & Storage| Credit checks, persistence, transactions, duplicate protection| Correct saving and charging
+4. Frontend| Input form, output, loading, error, edit, copy, regenerate| Main UI works
+5. History| Combine Content and Script records with filters| Unified History works
+6. Testing| Feature, credit, authorization, integration tests| Critical tests pass
+7. Deployment| Production migration, configuration, monitoring| Production feature works
+
+11. Final Design Decisions
+
+Item| Decision
+Script Storage| Separate generated_scripts table
+Content Storage| Existing generated_contents table
+History| Existing unified History page
+AI Integration| Reuse existing AIService
+Prompt Logic| Separate ScriptPromptBuilder
+Credit Cost| 1 per successful generation
+Regeneration| Create a new record
+Brand Profile| Optional
+Custom Tone| Supported
+MVP Output| Text-based structured script
+
+End of Document — Script Generator HLD v1.0

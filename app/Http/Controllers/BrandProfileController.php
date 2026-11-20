@@ -274,9 +274,10 @@ class BrandProfileController extends Controller
         $validated['personality'] ??= null;
         $validated['writing_style'] ??= null;
         $validated['main_platform'] ??= null;
-        $validated['pain_points'] ??= null;
+        $validated['pain_points'] ??= null; 
         $validated['additional_instructions'] ??= null;
 
         return $validated;
     }
 }
+   
